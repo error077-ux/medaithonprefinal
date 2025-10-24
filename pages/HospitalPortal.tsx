@@ -5,7 +5,7 @@ import Sidebar from '../components/Sidebar';
 import { ICONS } from '../constants';
 import { useAuth } from '../context/AuthContext';
 // FIX: Imported the Bill type to be used in the FinanceDashboard component.
-import { UserRole, Appointment, TestRequest, TestType, User, Prescription, Department, Doctor, TriageInfo, DischargeSummary, ICUBed, AttendanceRecord, Bill, MedicationStock } from '../types';
+import { UserRole, Appointment, TestRequest, TestType, User, Prescription, Department, Doctor, TriageInfo, DischargeSummary, ICUBed, AttendanceRecord, Bill, MedicationStock, PatientQuery } from '../types';
 import * as api from '../services/api';
 import Card from '../components/Card';
 
@@ -197,16 +197,19 @@ const AdminDashboard: React.FC = () => {
     const [patients, setPatients] = useState<User[]>([]);
     const [summaries, setSummaries] = useState<DischargeSummary[]>([]);
     const [generatingPatientId, setGeneratingPatientId] = useState<string | null>(null);
+    const [queries, setQueries] = useState<PatientQuery[]>([]);
+    const [selectedQuery, setSelectedQuery] = useState<PatientQuery | null>(null);
 
-    const fetchSummaries = useCallback(() => {
+    const fetchAdminData = useCallback(() => {
+        api.getDashboardStats().then(setStats).catch(console.error);
+        api.getAllPatients().then(setPatients).catch(console.error);
         api.getAllDischargeSummaries().then(setSummaries).catch(console.error);
+        api.getAllPatientQueries().then(setQueries).catch(console.error);
     }, []);
 
     useEffect(() => {
-        api.getDashboardStats().then(setStats).catch(console.error);
-        api.getAllPatients().then(setPatients).catch(console.error);
-        fetchSummaries();
-    }, [fetchSummaries]);
+        fetchAdminData();
+    }, [fetchAdminData]);
     
     const generatePdfContent = (summary: DischargeSummary) => {
         const patient = summary.patientInfo;
@@ -288,7 +291,7 @@ const AdminDashboard: React.FC = () => {
         setGeneratingPatientId(patientId);
         try {
             await api.generateAndSaveDischargeSummary(patientId);
-            fetchSummaries();
+            fetchAdminData();
         } catch (error) {
             console.error('Failed to generate summary:', error);
             alert('Could not generate discharge summary.');
@@ -300,7 +303,7 @@ const AdminDashboard: React.FC = () => {
     const handleApprove = async (summaryId: string) => {
         try {
             await api.approveDischargeSummary(summaryId);
-            fetchSummaries();
+            fetchAdminData();
         } catch (error) {
             console.error('Failed to approve summary:', error);
             alert('Could not approve summary.');
@@ -315,6 +318,24 @@ const AdminDashboard: React.FC = () => {
                 <Card title="Total Appointments" value={stats.totalAppointments} icon={ICONS.appointment} color="bg-blue-100 text-blue-600" />
                 <Card title="Total Lab/Radiology Tests" value={stats.totalTests} icon={ICONS.lab} color="bg-yellow-100 text-yellow-600" />
                 <Card title="Paid Bills" value={stats.completedBills} icon={ICONS.billing} color="bg-green-100 text-green-600" />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-md mt-8">
+                <h2 className="text-xl font-semibold mb-4 text-gray-800">Patient Queries & Complaints</h2>
+                <div className="max-h-96 overflow-y-auto">
+                    <table className="w-full text-left">
+                         <thead><tr className="border-b"><th className="p-3">Date</th><th className="p-3">Patient</th><th className="p-3">Subject</th><th className="p-3">Status</th><th className="p-3">Action</th></tr></thead>
+                        <tbody>
+                            {queries.slice().reverse().map(q => <tr key={q.id} className="border-b">
+                                <td className="p-3">{q.submissionDate}</td>
+                                <td className="p-3">{q.patientName}</td>
+                                <td className="p-3">{q.subject}</td>
+                                <td className="p-3">{q.status}</td>
+                                <td className="p-3"><button disabled={q.status === 'Resolved'} onClick={() => setSelectedQuery(q)} className="text-brand-blue hover:underline disabled:text-gray-400 disabled:no-underline">Respond</button></td>
+                            </tr>)}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-md mt-8">
@@ -370,8 +391,50 @@ const AdminDashboard: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+            {selectedQuery && <QueryResponseModal query={selectedQuery} onClose={() => setSelectedQuery(null)} onResponded={fetchAdminData} />}
         </div>
     );
+}
+
+const QueryResponseModal: React.FC<{query: PatientQuery, onClose: () => void, onResponded: () => void}> = ({ query, onClose, onResponded }) => {
+    const [response, setResponse] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!response.trim()) return;
+        setIsLoading(true);
+        try {
+            await api.respondToQuery(query.id, response);
+            onResponded();
+            onClose();
+        } catch (error) {
+            console.error("Failed to submit response", error);
+            alert("Could not submit response. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
+            <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 w-full max-w-lg">
+                <h2 className="text-2xl font-bold mb-4">Respond to Query</h2>
+                <div className="bg-gray-50 p-4 rounded-md mb-4 space-y-2">
+                    <p><strong>Patient:</strong> {query.patientName}</p>
+                    <p><strong>Subject:</strong> {query.subject}</p>
+                    <p className="whitespace-pre-wrap"><strong>Message:</strong> {query.message}</p>
+                </div>
+                <textarea value={response} onChange={e => setResponse(e.target.value)} required rows={5} className="w-full p-2 border rounded-md" placeholder="Type your response here..."></textarea>
+                <div className="flex justify-end space-x-2 mt-4">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+                    <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">
+                        {isLoading ? "Submitting..." : "Submit Response"}
+                    </button>
+                </div>
+            </form>
+        </div>
+    )
 }
 
 const ManageStaff: React.FC = () => {

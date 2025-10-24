@@ -1,9 +1,23 @@
-import { User, UserRole, Department, Doctor, Appointment, TestRequest, TestType, Prescription, Bill, InsuranceDoc, NurseTask, TriageInfo, DischargeSummary, AttendanceRecord, MedicationStock, ICUBed } from '../types';
-import { LoginCredentials, RegisterUserData, AddStaffData } from './api';
+import { User, UserRole, Department, Doctor, Appointment, TestRequest, TestType, Prescription, Bill, NurseTask, TriageInfo, DischargeSummary, AttendanceRecord, MedicationStock, ICUBed, RoomFacility, PatientQuery, InsuranceDetails, RoomBooking } from '../types';
+import { LoginCredentials, RegisterUserData, AddStaffData, InsuranceSubmitData } from './api';
 
 const MOCK_USERS: User[] = [
-    { id: 'p001', name: 'John Doe', role: UserRole.PATIENT, abhaId: '1234-5678-9012', aadhaar: '111122223333' },
-    { id: 'p002', name: 'Jane Smith', role: UserRole.PATIENT, abhaId: '9876-5432-1098', aadhaar: '444455556666' },
+    { 
+        id: 'p001', name: 'John Doe', role: UserRole.PATIENT, 
+        abhaId: '1234-5678-9012', aadhaar: '111122223333', 
+        gender: 'Male', dob: '1985-05-20', bloodGroup: 'O+', maritalStatus: 'Married',
+        contactNumber: '9876543210', email: 'john.doe@email.com',
+        address: { line1: '123 Health St', city: 'Wellville', state: 'Careland', pincode: '12345' },
+        emergencyContact: { name: 'Jane Doe', phone: '9876543211' }
+    },
+    { 
+        id: 'p002', name: 'Jane Smith', role: UserRole.PATIENT, 
+        abhaId: '9876-5432-1098', aadhaar: '444455556666',
+        gender: 'Female', dob: '1990-09-15', bloodGroup: 'A-', maritalStatus: 'Single',
+        contactNumber: '8765432109', email: 'jane.smith@email.com',
+        address: { line1: '456 Cure Ave', city: 'Healburg', state: 'Careland', pincode: '54321' },
+        emergencyContact: { name: 'John Smith', phone: '8765432100' }
+    },
     { id: 'a001', name: 'Admin User', role: UserRole.ADMIN },
     { id: 'm001', name: 'Manager Mike', role: UserRole.MANAGER },
     { id: 'h001', name: 'HR Helen', role: UserRole.HR },
@@ -80,6 +94,33 @@ const MOCK_STOCK: MedicationStock[] = [
     { id: 'med02', name: 'Ibuprofen', costPrice: 0.15, sellingPrice: 0.75, quantity: 800 },
 ];
 
+const MOCK_ROOM_FACILITIES: RoomFacility[] = [
+    { 
+        id: 'room01', 
+        type: 'Private', 
+        description: 'A personal room for maximum comfort and privacy.',
+        amenities: ['Private Bathroom', 'Television', 'Wi-Fi', 'Sofa for guests'],
+        imageUrl: 'https://images.unsplash.com/photo-1596522354195-e84ae3c4b5b2?q=80&w=2070&auto=format&fit=crop',
+        pricePerNight: 500,
+    },
+    { 
+        id: 'room02', 
+        type: 'Combined', 
+        description: 'A shared room with modern amenities, suitable for two patients.',
+        amenities: ['Shared Bathroom', 'Television per bed', 'Wi-Fi'],
+        imageUrl: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14aa?q=80&w=2070&auto=format&fit=crop',
+        pricePerNight: 250,
+    },
+    { 
+        id: 'room03', 
+        type: 'Suite', 
+        description: 'A luxurious suite with a separate area for family and guests.',
+        amenities: ['Private Bathroom with Bathtub', 'Large Screen TV', 'High-speed Wi-Fi', 'Kitchenette', 'Living Area'],
+        imageUrl: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2070&auto=format&fit=crop',
+        pricePerNight: 1200,
+    },
+];
+
 const MOCK_DATA = {
     'hms_users': MOCK_USERS,
     'hms_passwords': MOCK_PASSWORDS,
@@ -89,11 +130,14 @@ const MOCK_DATA = {
     'hms_tests': MOCK_TESTS,
     'hms_prescriptions': MOCK_PRESCRIPTIONS,
     'hms_bills': MOCK_BILLS,
-    'hms_insurance_docs': [],
+    'hms_insurance_details': [],
     'hms_discharge_summaries': [],
     'hms_icu_beds': MOCK_ICU_BEDS,
     'hms_attendance': MOCK_ATTENDANCE,
     'hms_med_stock': MOCK_STOCK,
+    'hms_room_facilities': MOCK_ROOM_FACILITIES,
+    'hms_patient_queries': [],
+    'hms_room_bookings': [],
 };
 
 
@@ -144,10 +188,18 @@ export const register = async (userData: RegisterUserData): Promise<{ user: User
     
     const newUser: User = {
         id: `p${String(users.length + 1).padStart(3, '0')}`,
-        name: userData.name,
         role: UserRole.PATIENT,
+        name: userData.name,
         abhaId: userData.abhaId,
         aadhaar: userData.aadhaar,
+        gender: userData.gender,
+        dob: userData.dob,
+        bloodGroup: userData.bloodGroup,
+        maritalStatus: userData.maritalStatus,
+        contactNumber: userData.contactNumber,
+        email: userData.email,
+        address: userData.address,
+        emergencyContact: userData.emergencyContact
     };
     
     users.push(newUser);
@@ -168,10 +220,13 @@ export const getPatientAppointments = async (patientId: string): Promise<Appoint
 export const getPatientTests = async (patientId: string): Promise<TestRequest[]> => getData<TestRequest[]>('hms_tests').filter(t => t.patientId === patientId);
 export const getPatientPrescriptions = async (patientId: string): Promise<Prescription[]> => getData<Prescription[]>('hms_prescriptions').filter(p => p.patientId === patientId);
 export const getPatientBills = async (patientId: string): Promise<Bill[]> => getData<Bill[]>('hms_bills').filter(b => b.patientId === patientId);
-export const getPatientInsuranceDocs = async (patientId: string): Promise<InsuranceDoc[]> => getData<InsuranceDoc[]>('hms_insurance_docs').filter(d => d.patientId === patientId);
+export const getPatientInsuranceDetails = async (patientId: string): Promise<InsuranceDetails | null> => getData<InsuranceDetails[]>('hms_insurance_details').find(d => d.patientId === patientId) || null;
 export const getPatientDischargeSummaries = async (patientId: string): Promise<DischargeSummary[]> => getData<DischargeSummary[]>('hms_discharge_summaries').filter(s => s.patientId === patientId);
 
-export const bookAppointment = async (appData: Omit<Appointment, 'id' | 'status'>): Promise<Appointment> => {
+export const bookAppointment = async (
+    appData: Omit<Appointment, 'id' | 'status'>,
+    roomBookingDetails?: { roomType: RoomFacility['type']; checkIn: string; checkOut: string; }
+): Promise<Appointment> => {
     const appointments = getData<Appointment[]>('hms_appointments');
     const newAppointment: Appointment = {
         ...appData,
@@ -180,22 +235,45 @@ export const bookAppointment = async (appData: Omit<Appointment, 'id' | 'status'
     };
     appointments.push(newAppointment);
     setData('hms_appointments', appointments);
+
+    if (roomBookingDetails) {
+        const roomFacilities = getData<RoomFacility[]>('hms_room_facilities');
+        const roomInfo = roomFacilities.find(r => r.type === roomBookingDetails.roomType);
+        if (roomInfo) {
+            const nights = (new Date(roomBookingDetails.checkOut).getTime() - new Date(roomBookingDetails.checkIn).getTime()) / (1000 * 3600 * 24);
+            const totalCost = nights > 0 ? nights * roomInfo.pricePerNight : 0;
+            
+            if (totalCost > 0) {
+                bookRoom({
+                    patientId: appData.patientId,
+                    roomType: roomBookingDetails.roomType,
+                    checkIn: roomBookingDetails.checkIn,
+                    checkOut: roomBookingDetails.checkOut,
+                    totalCost,
+                });
+            }
+        }
+    }
     return newAppointment;
 };
 
-export const uploadInsuranceDoc = async (patientId: string, formData: FormData): Promise<InsuranceDoc> => {
-    const file = formData.get('document') as File;
-    const docs = getData<InsuranceDoc[]>('hms_insurance_docs');
-    const newDoc: InsuranceDoc = {
-        id: `ins${docs.length + 1}`,
+export const submitInsuranceDetails = async (patientId: string, details: InsuranceSubmitData): Promise<InsuranceDetails> => {
+    const allDetails = getData<InsuranceDetails[]>('hms_insurance_details');
+    const existingIndex = allDetails.findIndex(d => d.patientId === patientId);
+    
+    const newDetails: InsuranceDetails = {
+        id: existingIndex !== -1 ? allDetails[existingIndex].id : `ins${allDetails.length + 1}`,
         patientId,
-        fileName: file.name,
-        uploadDate: new Date().toISOString().split('T')[0],
-        fileUrl: '#'
+        ...details
     };
-    docs.push(newDoc);
-    setData('hms_insurance_docs', docs);
-    return newDoc;
+
+    if (existingIndex !== -1) {
+        allDetails[existingIndex] = newDetails;
+    } else {
+        allDetails.push(newDetails);
+    }
+    setData('hms_insurance_details', allDetails);
+    return newDetails;
 };
 
 // --- HOSPITAL STAFF ---
@@ -423,6 +501,73 @@ export const getDoctorWorkload = async () => {
         });
 
     return Object.entries(workload).map(([doctorId, data]) => ({ doctorId, ...data }));
+};
+
+// --- PATIENT PORTAL ADDITIONS ---
+
+export const getRoomFacilities = async (): Promise<RoomFacility[]> => getData('hms_room_facilities');
+
+export const getPatientQueries = async (patientId: string): Promise<PatientQuery[]> => {
+    return getData<PatientQuery[]>('hms_patient_queries').filter(q => q.patientId === patientId);
+};
+
+export const submitPatientQuery = async (queryData: { patientId: string; patientName: string; subject: string; message: string; }): Promise<PatientQuery> => {
+    const queries = getData<PatientQuery[]>('hms_patient_queries');
+    const newQuery: PatientQuery = {
+        ...queryData,
+        id: `q${queries.length + 1}`,
+        submissionDate: new Date().toISOString().split('T')[0],
+        status: 'Submitted',
+    };
+    queries.push(newQuery);
+    setData('hms_patient_queries', queries);
+    return newQuery;
+};
+
+// --- ADMIN QUERY MANAGEMENT ---
+export const getAllPatientQueries = async (): Promise<PatientQuery[]> => {
+    return getData('hms_patient_queries');
+}
+
+export const respondToQuery = async (queryId: string, response: string): Promise<PatientQuery> => {
+    const queries = getData<PatientQuery[]>('hms_patient_queries');
+    const index = queries.findIndex(q => q.id === queryId);
+    if (index === -1) throw new Error("Query not found");
+    queries[index].response = response;
+    queries[index].status = 'Resolved';
+    setData('hms_patient_queries', queries);
+    return queries[index];
+}
+
+// --- ROOM BOOKING ---
+export const bookRoom = async (bookingData: Omit<RoomBooking, 'id'>): Promise<RoomBooking> => {
+    const bookings = getData<RoomBooking[]>('hms_room_bookings');
+    const bills = getData<Bill[]>('hms_bills');
+    const users = getData<User[]>('hms_users');
+
+    const patient = users.find(u => u.id === bookingData.patientId);
+    if (!patient) throw new Error("Patient not found");
+
+    const newBooking: RoomBooking = {
+        ...bookingData,
+        id: `book${bookings.length + 1}`,
+    };
+    bookings.push(newBooking);
+    
+    const newBill: Bill = {
+        id: `bill${bills.length + 1}`,
+        patientId: bookingData.patientId,
+        patientName: patient.name,
+        date: new Date().toISOString().split('T')[0],
+        amount: bookingData.totalCost,
+        details: `Room Booking: ${bookingData.roomType} (${bookingData.checkIn} to ${bookingData.checkOut})`,
+        status: 'Unpaid'
+    };
+    bills.push(newBill);
+
+    setData('hms_room_bookings', bookings);
+    setData('hms_bills', bills);
+    return newBooking;
 };
 
 // Unused but defined in types

@@ -1,20 +1,20 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import { ICONS } from '../constants';
 import { useAuth } from '../context/AuthContext';
-import { Appointment, TestRequest, Prescription, Bill, InsuranceDoc, Department, Doctor, DischargeSummary } from '../types';
+import { Appointment, TestRequest, Prescription, Bill, InsuranceDetails, Department, Doctor, DischargeSummary, RoomFacility, PatientQuery } from '../types';
 import * as api from '../services/api';
 
 const PatientPortal: React.FC = () => {
     const navItems = [
         { to: '/patient', label: 'Dashboard', icon: ICONS.dashboard },
         { to: '/patient/appointments', label: 'Appointments', icon: ICONS.appointment },
-        { to: '/patient/records', label: 'My Records', icon: ICONS.records },
+        { to: '/patient/history', label: 'Medical History', icon: ICONS.records },
         { to: '/patient/billing', label: 'Billing', icon: ICONS.billing },
         { to: '/patient/insurance', label: 'Insurance', icon: ICONS.insurance },
+        { to: '/patient/queries', label: 'Queries & Complaints', icon: ICONS.query },
     ];
 
     return (
@@ -26,9 +26,10 @@ const PatientPortal: React.FC = () => {
                     <Routes>
                         <Route index element={<PatientDashboard />} />
                         <Route path="appointments" element={<PatientAppointments />} />
-                        <Route path="records" element={<PatientRecords />} />
+                        <Route path="history" element={<PatientHistory />} />
                         <Route path="billing" element={<PatientBilling />} />
                         <Route path="insurance" element={<PatientInsurance />} />
+                        <Route path="queries" element={<PatientQueriesAndComplaints />} />
                     </Routes>
                 </main>
             </div>
@@ -52,7 +53,27 @@ const PatientDashboard: React.FC = () => {
     return (
         <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Welcome, {user?.name}!</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div className="bg-white p-6 rounded-lg shadow-md md:col-span-3">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">Demographic Information</h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 text-sm">
+                        <div><strong className="block text-gray-500">Full Name</strong>{user?.name}</div>
+                        <div><strong className="block text-gray-500">ABHA ID</strong>{user?.abhaId}</div>
+                        <div><strong className="block text-gray-500">Aadhaar No.</strong>{user?.aadhaar}</div>
+                        <div><strong className="block text-gray-500">Gender</strong>{user?.gender}</div>
+                        <div><strong className="block text-gray-500">Date of Birth</strong>{user?.dob}</div>
+                        <div><strong className="block text-gray-500">Blood Group</strong>{user?.bloodGroup}</div>
+                        <div><strong className="block text-gray-500">Marital Status</strong>{user?.maritalStatus}</div>
+                        <div><strong className="block text-gray-500">Contact No.</strong>{user?.contactNumber}</div>
+                        <div className="col-span-2"><strong className="block text-gray-500">Email</strong>{user?.email}</div>
+                        <div className="col-span-2"><strong className="block text-gray-500">Address</strong>
+                            {user?.address ? `${user.address.line1}, ${user.address.city}, ${user.address.state} - ${user.address.pincode}` : 'N/A'}
+                        </div>
+                        <div className="col-span-2"><strong className="block text-gray-500">Emergency Contact</strong>
+                           {user?.emergencyContact ? `${user.emergencyContact.name} (${user.emergencyContact.phone})` : 'N/A'}
+                        </div>
+                    </div>
+                </div>
                  {upcomingAppointment ? (
                     <div className="bg-brand-blue-light p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
                         <h2 className="text-xl font-semibold text-brand-blue-dark mb-2">Upcoming Appointment</h2>
@@ -83,16 +104,15 @@ const PatientAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showModal, setShowModal] = useState(false);
 
-  const fetchAppointments = () => {
+  const fetchAppointments = useCallback(() => {
     if (user) {
       api.getPatientAppointments(user.id).then(setAppointments).catch(console.error);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchAppointments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchAppointments]);
   
   const getStatusChip = (status: Appointment['status']) => {
     switch(status) {
@@ -102,6 +122,11 @@ const PatientAppointments: React.FC = () => {
         case 'Pending Triage': return 'bg-blue-200 text-blue-800';
         default: return 'bg-gray-200 text-gray-800';
     }
+  }
+
+  const handleBooked = () => {
+      fetchAppointments();
+      alert("Appointment requested successfully! If you booked a room, a corresponding bill has been added to your account.");
   }
 
   return (
@@ -139,7 +164,7 @@ const PatientAppointments: React.FC = () => {
           </tbody>
         </table>
       </div>
-      {showModal && <AppointmentModal onClose={() => setShowModal(false)} onBooked={fetchAppointments} />}
+      {showModal && <AppointmentModal onClose={() => setShowModal(false)} onBooked={handleBooked} />}
     </>
   );
 };
@@ -147,31 +172,63 @@ const PatientAppointments: React.FC = () => {
 const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = ({onClose, onBooked}) => {
     const { user } = useAuth();
     const [departments, setDepartments] = useState<Department[]>([]);
+    const [rooms, setRooms] = useState<RoomFacility[]>([]);
     const [selectedDept, setSelectedDept] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [requireRoom, setRequireRoom] = useState(false);
+    const [roomBooking, setRoomBooking] = useState({ type: '', checkIn: '', checkOut: '' });
+    
     useEffect(() => {
         api.getDepartments().then(setDepartments).catch(console.error);
+        api.getRoomFacilities().then(setRooms).catch(console.error);
     }, []);
+
+    useEffect(() => {
+        // When appointment date changes, default check-in to that date
+        setRoomBooking(prev => ({ ...prev, checkIn: date }));
+    }, [date]);
+
+    const calculateRoomCost = () => {
+        if (requireRoom && roomBooking.type && roomBooking.checkIn && roomBooking.checkOut) {
+            const roomInfo = rooms.find(r => r.type === roomBooking.type);
+            if (!roomInfo) return 0;
+            const nights = (new Date(roomBooking.checkOut).getTime() - new Date(roomBooking.checkIn).getTime()) / (1000 * 3600 * 24);
+            return nights > 0 ? nights * roomInfo.pricePerNight : 0;
+        }
+        return 0;
+    };
+    const totalRoomCost = calculateRoomCost();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if(!user || !selectedDept || !date || !time) return;
+        if(requireRoom && totalRoomCost <= 0) {
+            alert("Please select a valid room type and check-in/check-out dates.");
+            return;
+        }
+
         setIsLoading(true);
-        
         const department = departments.find(d => d.id === selectedDept);
 
         if(department) {
             try {
-                await api.bookAppointment({
-                    patientId: user.id,
-                    patientName: user.name,
-                    departmentName: department.name,
-                    date,
-                    time,
-                });
+                await api.bookAppointment(
+                    {
+                        patientId: user.id,
+                        patientName: user.name,
+                        departmentName: department.name,
+                        date,
+                        time,
+                    },
+                    requireRoom ? {
+                        roomType: roomBooking.type as RoomFacility['type'],
+                        checkIn: roomBooking.checkIn,
+                        checkOut: roomBooking.checkOut,
+                    } : undefined
+                );
                 onBooked();
                 onClose();
             } catch (error) {
@@ -183,17 +240,46 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-            <div className="bg-white rounded-lg p-8 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
+            <div className="bg-white rounded-lg p-8 w-full max-w-lg max-h-full overflow-y-auto">
                 <h2 className="text-2xl font-bold mb-4">Book Appointment</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <select value={selectedDept} onChange={e => setSelectedDept(e.target.value)} required className="w-full p-2 border rounded">
-                        <option value="">Select Department</option>
-                        {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                    </select>
-                    <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="w-full p-2 border rounded" min={new Date().toISOString().split("T")[0]}/>
-                    <input type="time" value={time} onChange={e => setTime(e.target.value)} required className="w-full p-2 border rounded" />
-                    <div className="flex justify-end space-x-2">
+                    <div>
+                        <h3 className="font-semibold text-gray-700 mb-2">Appointment Details</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <select value={selectedDept} onChange={e => setSelectedDept(e.target.value)} required className="w-full p-2 border rounded md:col-span-3">
+                                <option value="">Select Department</option>
+                                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                            </select>
+                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="w-full p-2 border rounded" min={new Date().toISOString().split("T")[0]}/>
+                            <input type="time" value={time} onChange={e => setTime(e.target.value)} required className="w-full p-2 border rounded" />
+                        </div>
+                    </div>
+                    
+                    <div className="border-t pt-4">
+                        <label className="flex items-center space-x-2">
+                            <input type="checkbox" checked={requireRoom} onChange={e => setRequireRoom(e.target.checked)} className="h-4 w-4"/>
+                            <span>Require room booking for this appointment?</span>
+                        </label>
+                        {requireRoom && (
+                            <div className="mt-4 space-y-4 border p-4 rounded-md bg-gray-50">
+                                <h3 className="font-semibold text-gray-700">Room Booking Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                     <select value={roomBooking.type} onChange={e => setRoomBooking({...roomBooking, type: e.target.value})} required className="w-full p-2 border rounded">
+                                        <option value="">Select Room Type</option>
+                                        {rooms.map(r => <option key={r.id} value={r.type}>{r.type} (${r.pricePerNight}/night)</option>)}
+                                    </select>
+                                    <input type="date" value={roomBooking.checkIn} onChange={e => setRoomBooking({...roomBooking, checkIn: e.target.value})} required className="w-full p-2 border rounded" min={date || new Date().toISOString().split("T")[0]}/>
+                                    <input type="date" value={roomBooking.checkOut} onChange={e => setRoomBooking({...roomBooking, checkOut: e.target.value})} required className="w-full p-2 border rounded" min={roomBooking.checkIn || new Date().toISOString().split("T")[0]}/>
+                                </div>
+                                {totalRoomCost > 0 && (
+                                    <p className="font-semibold text-lg text-right">Room Cost: ${totalRoomCost.toFixed(2)}</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-end space-x-2 pt-4 border-t">
                         <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
                         <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">{isLoading ? "Requesting..." : "Request Appointment"}</button>
                     </div>
@@ -203,7 +289,7 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
     );
 }
 
-const PatientRecords: React.FC = () => {
+const PatientHistory: React.FC = () => {
     const { user } = useAuth();
     const [tests, setTests] = useState<TestRequest[]>([]);
     const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
@@ -227,7 +313,7 @@ const PatientRecords: React.FC = () => {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">My Medical Records</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">My Medical History</h1>
             <div className="space-y-6">
                 <div className="bg-white p-4 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-2">Test Results</h2>
@@ -332,67 +418,228 @@ const PatientBilling: React.FC = () => {
         </div>
     )
 };
+
 const PatientInsurance: React.FC = () => {
     const { user } = useAuth();
-    const [docs, setDocs] = useState<InsuranceDoc[]>([]);
-    const [file, setFile] = useState<File | null>(null);
-    const [isUploading, setIsUploading] = useState(false);
+    const [details, setDetails] = useState<InsuranceDetails | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const fetchDocs = () => {
-        if (user) api.getPatientInsuranceDocs(user.id).then(setDocs).catch(console.error);
-    };
-
-    useEffect(() => {
-        fetchDocs();
-         // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchDetails = useCallback(() => {
+        if (user) {
+            setIsLoading(true);
+            api.getPatientInsuranceDetails(user.id)
+                .then(setDetails)
+                .catch(console.error)
+                .finally(() => setIsLoading(false));
+        }
     }, [user]);
 
-    const handleUpload = async () => {
-        if (user && file) {
-            setIsUploading(true);
-            const formData = new FormData();
-            formData.append('document', file);
-            try {
-                await api.uploadInsuranceDoc(user.id, formData);
-                setFile(null);
-                fetchDocs();
-            } catch (error) {
-                console.error("Upload failed", error);
-                alert("File upload failed.");
-            } finally {
-                setIsUploading(false);
+    useEffect(() => {
+        fetchDetails();
+    }, [fetchDetails]);
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file || !user) return;
+
+        setIsLoading(true);
+
+        if (!('BarcodeDetector' in window)) {
+            alert("QR code scanning is not supported by your browser. Please use a modern browser like Chrome or Edge.");
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            // @ts-ignore - BarcodeDetector is not in all TS DOM libs yet
+            const barcodeDetector = new window.BarcodeDetector({ formats: ['qr_code'] });
+            const imageBitmap = await createImageBitmap(file);
+            const barcodes = await barcodeDetector.detect(imageBitmap);
+
+            if (barcodes.length === 0) {
+                throw new Error("No QR code found in the image. Please try again with a clearer image.");
             }
+
+            const qrData = barcodes[0].rawValue;
+            let parsedData;
+
+            try {
+                parsedData = JSON.parse(qrData);
+            } catch (e) {
+                throw new Error("The QR code contains invalid data. It should be in a valid JSON format.");
+            }
+
+            if (!parsedData.provider || !parsedData.policyNumber || !parsedData.coverage || !parsedData.expiryDate) {
+                throw new Error("The QR code is missing required insurance information (provider, policyNumber, coverage, expiryDate).");
+            }
+
+            const insuranceData: api.InsuranceSubmitData = {
+                provider: parsedData.provider,
+                policyNumber: parsedData.policyNumber,
+                nominee: parsedData.nominee || 'N/A',
+                coverage: Number(parsedData.coverage),
+                expiryDate: parsedData.expiryDate,
+            };
+
+            const newDetails = await api.submitInsuranceDetails(user.id, insuranceData);
+            setDetails(newDetails);
+            alert("Insurance details extracted and saved successfully!");
+
+        } catch (error: any) {
+            console.error("Failed to process QR code:", error);
+            alert(`Error processing QR code: ${error.message}`);
+        } finally {
+            setIsLoading(false);
+            if (fileInputRef.current) fileInputRef.current.value = "";
         }
     };
+
     return (
         <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Insurance Documents</h1>
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h2 className="text-xl font-semibold mb-4">Upload New Document</h2>
-                <div className="flex items-center space-x-4">
-                    <input type="file" onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} className="flex-1 p-2 border rounded" />
-                    <button onClick={handleUpload} disabled={!file || isUploading} className="bg-brand-blue text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-brand-blue-dark disabled:bg-gray-400">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Insurance Details</h1>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                {isLoading && <p>Loading details...</p>}
+
+                {!isLoading && details && (
+                    <div>
+                        <h2 className="text-xl font-semibold mb-4">Your Insurance Policy</h2>
+                        <div className="grid grid-cols-2 gap-4 text-sm mb-6">
+                            <div><strong className="block text-gray-500">Provider</strong>{details.provider}</div>
+                            <div><strong className="block text-gray-500">Policy Number</strong>{details.policyNumber}</div>
+                            <div><strong className="block text-gray-500">Nominee</strong>{details.nominee}</div>
+                            <div><strong className="block text-gray-500">Coverage</strong>${details.coverage.toLocaleString()}</div>
+                            <div><strong className="block text-gray-500">Expires On</strong>{details.expiryDate}</div>
+                        </div>
+                    </div>
+                )}
+
+                {!isLoading && !details && (
+                     <p className="text-center text-gray-500 mb-4">No insurance details found. Please upload your insurance QR code.</p>
+                )}
+
+                <div className="text-center border-t pt-6">
+                     <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="qr-upload"
+                    />
+                    <label
+                        htmlFor="qr-upload"
+                        className={`cursor-pointer inline-flex items-center space-x-2 px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-blue-dark transition-colors ${isLoading ? 'bg-gray-400 cursor-not-allowed' : ''}`}
+                    >
                         {ICONS.upload}
-                        <span>{isUploading ? 'Uploading...' : 'Upload'}</span>
-                    </button>
+                        <span>{details ? 'Update Insurance QR Code' : 'Upload Insurance QR Code'}</span>
+                    </label>
                 </div>
             </div>
-             <div className="bg-white p-4 rounded-lg shadow-md">
-                <table className="w-full text-left">
-                    <thead><tr className="border-b">
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">File Name</th>
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Upload Date</th>
-                    </tr></thead>
-                    <tbody>
-                        {docs.map(d => <tr key={d.id} className="border-b hover:bg-gray-50">
-                            <td className="p-3 text-gray-800 font-medium">{d.fileName}</td>
-                            <td className="p-3 text-gray-600">{d.uploadDate}</td>
-                        </tr>)}
-                    </tbody>
-                </table>
+        </div>
+    );
+};
+
+const PatientQueriesAndComplaints: React.FC = () => {
+    const { user } = useAuth();
+    const [queries, setQueries] = useState<PatientQuery[]>([]);
+    const [subject, setSubject] = useState('');
+    const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchQueries = useCallback(() => {
+        if (user) {
+            api.getPatientQueries(user.id).then(setQueries).catch(console.error);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        fetchQueries();
+    }, [fetchQueries]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user || !subject.trim() || !message.trim()) return;
+
+        setIsLoading(true);
+        try {
+            await api.submitPatientQuery({
+                patientId: user.id,
+                patientName: user.name,
+                subject,
+                message,
+            });
+            setSubject('');
+            setMessage('');
+            fetchQueries();
+        } catch (error) {
+            console.error("Failed to submit query:", error);
+            alert("Could not submit your query. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    const getStatusChip = (status: PatientQuery['status']) => {
+        switch(status) {
+            case 'Submitted': return 'bg-blue-200 text-blue-800';
+            case 'In Review': return 'bg-yellow-200 text-yellow-800';
+            case 'Resolved': return 'bg-green-200 text-green-800';
+            default: return 'bg-gray-200 text-gray-800';
+        }
+    };
+
+    return (
+        <div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Queries & Complaints</h1>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-4">Submit a New Query</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
+                            <input type="text" id="subject" value={subject} onChange={e => setSubject(e.target.value)} required className="mt-1 w-full p-2 border rounded-md"/>
+                        </div>
+                        <div>
+                            <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
+                            <textarea id="message" value={message} onChange={e => setMessage(e.target.value)} required rows={5} className="mt-1 w-full p-2 border rounded-md"></textarea>
+                        </div>
+                        <button type="submit" disabled={isLoading} className="w-full bg-brand-blue text-white py-2 rounded-lg hover:bg-brand-blue-dark disabled:bg-gray-400">
+                            {isLoading ? "Submitting..." : "Submit"}
+                        </button>
+                    </form>
+                </div>
+                <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-4">Your Past Queries</h2>
+                    <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                        {queries.length === 0 ? (
+                            <p className="text-gray-500">You haven't submitted any queries yet.</p>
+                        ) : (
+                            queries.slice().reverse().map(q => (
+                                <div key={q.id} className="border p-4 rounded-md">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <p className="font-bold">{q.subject}</p>
+                                            <p className="text-xs text-gray-500">Submitted on: {q.submissionDate}</p>
+                                        </div>
+                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusChip(q.status)}`}>{q.status}</span>
+                                    </div>
+                                    <p className="text-sm mt-2 text-gray-700 whitespace-pre-wrap">{q.message}</p>
+                                    {q.response && (
+                                        <div className="mt-3 pt-3 border-t bg-gray-50 p-3 rounded-md">
+                                            <p className="font-semibold text-sm">Hospital Response:</p>
+                                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{q.response}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
-    )
+    );
 };
+
 
 export default PatientPortal;

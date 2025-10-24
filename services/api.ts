@@ -1,4 +1,4 @@
-import { User, UserRole, Department, Doctor, Appointment, TestRequest, TestType, Prescription, Bill, InsuranceDoc, NurseTask, TriageInfo, DischargeSummary, AttendanceRecord, MedicationStock, ICUBed } from '../types';
+import { User, UserRole, Department, Doctor, Appointment, TestRequest, TestType, Prescription, Bill, NurseTask, TriageInfo, DischargeSummary, AttendanceRecord, MedicationStock, ICUBed, RoomFacility, RoomBooking, InsuranceDetails } from '../types';
 import * as mockApi from './mockApi';
 
 // Initialize mock data on app startup
@@ -9,8 +9,9 @@ export * from '../types';
 
 // --- API Type Definitions ---
 export type LoginCredentials = { abhaId?: string; password?: string; staffId?: string };
-export type RegisterUserData = { name: string; abhaId: string; aadhaar: string; password: string };
+export type RegisterUserData = Omit<User, 'id' | 'role'> & { password: string };
 export type AddStaffData = { name: string; role: UserRole; department?: string; password: string };
+export type InsuranceSubmitData = Omit<InsuranceDetails, 'id' | 'patientId'>;
 
 
 // --- API Implementations (pointing to mock API) ---
@@ -28,10 +29,12 @@ export const getPatientAppointments = mockApi.getPatientAppointments;
 export const getPatientTests = mockApi.getPatientTests;
 export const getPatientPrescriptions = mockApi.getPatientPrescriptions;
 export const getPatientBills = mockApi.getPatientBills;
-export const getPatientInsuranceDocs = mockApi.getPatientInsuranceDocs;
+export const getPatientInsuranceDetails = mockApi.getPatientInsuranceDetails;
 export const getPatientDischargeSummaries = mockApi.getPatientDischargeSummaries;
 export const bookAppointment = mockApi.bookAppointment;
-export const uploadInsuranceDoc = mockApi.uploadInsuranceDoc;
+export const submitInsuranceDetails = mockApi.submitInsuranceDetails;
+export const bookRoom = mockApi.bookRoom;
+
 
 // Doctor APIs
 export const getDoctorAppointments = mockApi.getDoctorAppointments;
@@ -62,6 +65,9 @@ export const getAllPatients = mockApi.getAllPatients;
 export const generateAndSaveDischargeSummary = mockApi.generateAndSaveDischargeSummary;
 export const getAllDischargeSummaries = mockApi.getAllDischargeSummaries;
 export const approveDischargeSummary = mockApi.approveDischargeSummary;
+export const getAllPatientQueries = mockApi.getAllPatientQueries;
+export const respondToQuery = mockApi.respondToQuery;
+
 
 // HR API
 export const getAttendance = mockApi.getAttendance;
@@ -77,3 +83,8 @@ export const getDoctorWorkload = mockApi.getDoctorWorkload;
 // Aiding Portals API
 export const getICUBeds = mockApi.getICUBeds;
 export const getMedicationStock = mockApi.getMedicationStock;
+
+// Patient Portal Additions
+export const getRoomFacilities = mockApi.getRoomFacilities;
+export const getPatientQueries = mockApi.getPatientQueries;
+export const submitPatientQuery = mockApi.submitPatientQuery;

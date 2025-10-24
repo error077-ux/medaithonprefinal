@@ -15,9 +15,28 @@ export interface User {
   id: string;
   name: string;
   role: UserRole;
-  abhaId?: string; // For patients
-  aadhaar?: string; // For patients
-  department?: string; // For staff
+  // Patient Demographics
+  abhaId?: string;
+  aadhaar?: string;
+  gender?: 'Male' | 'Female' | 'Other';
+  dob?: string;
+  bloodGroup?: string;
+  maritalStatus?: 'Single' | 'Married' | 'Divorced' | 'Widowed';
+  contactNumber?: string;
+  email?: string;
+  address?: {
+    line1: string;
+    line2?: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
+  emergencyContact?: {
+    name: string;
+    phone: string;
+  };
+  // Staff Details
+  department?: string;
 }
 
 export interface Department {
@@ -106,12 +125,14 @@ export interface Bill {
   status: 'Paid' | 'Unpaid';
 }
 
-export interface InsuranceDoc {
+export interface InsuranceDetails {
   id: string;
   patientId: string;
-  fileName: string;
-  uploadDate: string;
-  fileUrl: string;
+  provider: string;
+  policyNumber: string;
+  nominee: string;
+  coverage: number;
+  expiryDate: string;
 }
 
 export interface NurseTask {
@@ -164,4 +185,33 @@ export interface ICUBed {
   isOccupied: boolean;
   patientId?: string;
   patientName?: string;
+}
+
+export interface RoomFacility {
+  id: string;
+  type: 'Private' | 'Combined' | 'Suite';
+  description: string;
+  amenities: string[];
+  imageUrl: string;
+  pricePerNight: number;
+}
+
+export interface PatientQuery {
+  id: string;
+  patientId: string;
+  patientName: string;
+  subject: string;
+  message: string;
+  submissionDate: string;
+  status: 'Submitted' | 'In Review' | 'Resolved';
+  response?: string;
+}
+
+export interface RoomBooking {
+    id: string;
+    patientId: string;
+    roomType: RoomFacility['type'];
+    checkIn: string;
+    checkOut: string;
+    totalCost: number;
 }
