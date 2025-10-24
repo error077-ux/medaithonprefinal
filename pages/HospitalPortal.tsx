@@ -74,7 +74,7 @@ const AdministrationPortal: React.FC = () => {
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-8 flex-1 animate-fade-in">
+                <main className="p-8 flex-1">
                     <Routes>
                         {user?.role === UserRole.ADMIN && (
                             <>
@@ -125,7 +125,7 @@ const AidingPortal: React.FC = () => {
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-8 flex-1 animate-fade-in">
+                <main className="p-8 flex-1">
                      <Routes>
                          {user?.role === UserRole.LAB_TECHNICIAN && <Route index element={<LabDashboard />} />}
                          {user?.role === UserRole.RADIOLOGIST && <Route index element={<RadiologyDashboard />} />}
@@ -166,7 +166,7 @@ const MedicalPortal: React.FC = () => {
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-8 flex-1 animate-fade-in">
+                <main className="p-8 flex-1">
                     <Routes>
                         {user?.role === UserRole.DOCTOR && (
                             <>
@@ -311,38 +311,38 @@ const AdminDashboard: React.FC = () => {
 
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-neutral-900">Admin Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="animate-fade-in-up"><Card title="Total Appointments" value={stats.totalAppointments} icon={ICONS.appointment} color="bg-primary-100 text-primary-600" /></div>
-                <div className="animate-fade-in-up" style={{ animationDelay: '100ms'}}><Card title="Total Lab/Radiology Tests" value={stats.totalTests} icon={ICONS.lab} color="bg-secondary-100 text-secondary-600" /></div>
-                <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}><Card title="Paid Bills" value={stats.completedBills} icon={ICONS.billing} color="bg-success-100 text-success-600" /></div>
+                <Card title="Total Appointments" value={stats.totalAppointments} icon={ICONS.appointment} color="bg-primary-light text-primary-dark" />
+                <Card title="Total Lab/Radiology Tests" value={stats.totalTests} icon={ICONS.lab} color="bg-warning-light text-warning-dark" />
+                <Card title="Paid Bills" value={stats.completedBills} icon={ICONS.billing} color="bg-success-light text-success-dark" />
             </div>
 
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <h2 className="text-xl font-semibold mb-4 text-neutral-800 p-2">Patient Queries & Complaints</h2>
                 <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                         <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Subject</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th></tr></thead>
+                         <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Subject</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th></tr></thead>
                         <tbody>
-                            {queries.slice().reverse().map((q, index) => <tr key={q.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {queries.slice().reverse().map(q => <tr key={q.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3">{q.submissionDate}</td>
                                 <td className="p-3">{q.patientName}</td>
                                 <td className="p-3">{q.subject}</td>
                                 <td className="p-3">{q.status}</td>
-                                <td className="p-3"><button disabled={q.status === 'Resolved'} onClick={() => setSelectedQuery(q)} className="font-semibold text-primary-600 hover:underline disabled:text-neutral-400 disabled:no-underline">Respond</button></td>
+                                <td className="p-3"><button disabled={q.status === 'Resolved'} onClick={() => setSelectedQuery(q)} className="font-semibold text-primary hover:underline disabled:text-neutral-400 disabled:no-underline">Respond</button></td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <h2 className="text-xl font-semibold mb-4 text-neutral-800 p-2">Discharge Summary Management</h2>
                 <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50">
+                        <thead className="bg-neutral-100">
                             <tr className="border-b-2 border-neutral-200">
                                 <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
                                 <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Generated On</th>
@@ -352,21 +352,21 @@ const AdminDashboard: React.FC = () => {
                         </thead>
                         <tbody>
                             {summaries.length === 0 && <tr><td colSpan={4} className="p-3 text-center text-neutral-500">No summaries generated yet.</td></tr>}
-                            {summaries.map((s, index) => (
-                                <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {summaries.map(s => (
+                                <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                     <td className="p-3">{s.patientName}</td>
                                     <td className="p-3">{new Date(s.generationDate).toLocaleString()}</td>
                                     <td className="p-3">
-                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${s.status === 'Approved' ? 'bg-success-100 text-success-800' : 'bg-warning-100 text-warning-800'}`}>
+                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${s.status === 'Approved' ? 'bg-success-light text-success-dark' : 'bg-warning-light text-warning-dark'}`}>
                                             {s.status}
                                         </span>
                                     </td>
                                     <td className="p-3 space-x-2">
                                         {s.status === 'Pending Approval' && (
-                                            <button onClick={() => handleApprove(s.id)} className="text-sm bg-success-100 text-success-800 font-semibold px-3 py-1 rounded-md hover:bg-success-200">Approve</button>
+                                            <button onClick={() => handleApprove(s.id)} className="text-sm bg-success-light text-success-dark font-semibold px-3 py-1 rounded-md hover:bg-green-200">Approve</button>
                                         )}
-                                        <button onClick={() => handleDownload(s, 'json')} className="text-sm bg-primary-100 text-primary-800 font-semibold px-3 py-1 rounded-md hover:bg-primary-200">JSON</button>
-                                        <button onClick={() => handleDownload(s, 'pdf')} className="text-sm bg-red-100 text-danger-800 font-semibold px-3 py-1 rounded-md hover:bg-red-200">PDF</button>
+                                        <button onClick={() => handleDownload(s, 'json')} className="text-sm bg-primary-light text-primary-dark font-semibold px-3 py-1 rounded-md hover:bg-blue-200">JSON</button>
+                                        <button onClick={() => handleDownload(s, 'pdf')} className="text-sm bg-red-100 text-danger-dark font-semibold px-3 py-1 rounded-md hover:bg-red-200">PDF</button>
                                     </td>
                                 </tr>
                             ))}
@@ -375,15 +375,15 @@ const AdminDashboard: React.FC = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                  <h2 className="text-xl font-semibold mb-4 text-neutral-800 p-2">Generate Patient Summaries</h2>
                 <table className="w-full text-left">
-                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient ID</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">ABHA ID</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Actions</th></tr></thead>
+                    <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient ID</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">ABHA ID</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Actions</th></tr></thead>
                     <tbody>
-                        {patients.map((p, index) => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {patients.map(p => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                             <td className="p-3">{p.id}</td><td className="p-3">{p.name}</td><td className="p-3">{p.abhaId}</td>
                             <td className="p-3 space-x-2">
-                                <button onClick={() => handleGenerateSummary(p.id)} disabled={generatingPatientId === p.id} className="text-sm bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 disabled:bg-neutral-400 font-semibold transition-all active:scale-95">
+                                <button onClick={() => handleGenerateSummary(p.id)} disabled={generatingPatientId === p.id} className="text-sm bg-primary text-white px-3 py-1 rounded-md hover:bg-primary-dark disabled:bg-neutral-400 font-semibold">
                                     {generatingPatientId === p.id ? 'Generating...' : 'Generate Summary'}
                                 </button>
                             </td>
@@ -417,11 +417,11 @@ const QueryResponseModal: React.FC<{query: PatientQuery, onClose: () => void, on
     };
     
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg max-h-full flex flex-col animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-lg max-h-full flex flex-col">
                 <div className="flex justify-between items-center p-5 border-b border-neutral-200">
-                    <h2 className="text-xl font-bold text-neutral-800">Respond to Query</h2>
-                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                    <h2 className="text-xl font-bold text-neutral-900">Respond to Query</h2>
+                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
                 <form onSubmit={handleSubmit} className="flex-grow flex flex-col">
                     <div className="p-6 space-y-4 overflow-y-auto">
@@ -430,11 +430,11 @@ const QueryResponseModal: React.FC<{query: PatientQuery, onClose: () => void, on
                             <p><strong>Subject:</strong> {query.subject}</p>
                             <p className="whitespace-pre-wrap"><strong>Message:</strong> {query.message}</p>
                         </div>
-                        <textarea value={response} onChange={e => setResponse(e.target.value)} required rows={5} className="w-full p-2 border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500/50" placeholder="Type your response here..."></textarea>
+                        <textarea value={response} onChange={e => setResponse(e.target.value)} required rows={5} className="w-full p-2 border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary/50" placeholder="Type your response here..."></textarea>
                     </div>
-                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                         <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400">
                             {isLoading ? "Submitting..." : "Submit Response"}
                         </button>
                     </div>
@@ -490,18 +490,18 @@ const ManageStaff: React.FC = () => {
 
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-neutral-800">Manage Staff</h1>
-                 <button onClick={() => setShowModal(true)} className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-700 font-semibold shadow-soft hover:shadow-lg transition-all active:scale-95">
+                <h1 className="text-3xl font-bold text-neutral-900">Manage Staff</h1>
+                 <button onClick={() => setShowModal(true)} className="bg-primary text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-dark font-semibold shadow-soft hover:shadow-lg transition-all">
                     {ICONS.add}
                     <span>Add New Staff</span>
                 </button>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <table className="w-full text-left">
-                    <thead className="bg-neutral-50">
+                    <thead className="bg-neutral-100">
                         <tr className="border-b-2 border-neutral-200">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Staff ID</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Name</th>
@@ -514,20 +514,20 @@ const ManageStaff: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {staff.map((s, index) => {
+                        {staff.map(s => {
                             const record = attendance.find(a => a.staffId === s.id);
                             let status = <span className="text-neutral-500">Absent</span>;
                             if (record) {
                                 if (record.outTime) {
-                                    status = <span className="text-success-700">Off Duty</span>;
+                                    status = <span className="text-success-dark">Off Duty</span>;
                                 } else if (record.inTime) {
-                                    status = <span className="text-primary-700">On Duty</span>;
+                                    status = <span className="text-primary-dark">On Duty</span>;
                                 }
                             }
                             const isUpdating = updatingStaffId === s.id;
 
                             return (
-                                <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                     <td className="p-3">{s.id}</td>
                                     <td className="p-3">{s.name}</td>
                                     <td className="p-3">{s.role}</td>
@@ -540,7 +540,7 @@ const ManageStaff: React.FC = () => {
                                             <button 
                                                 onClick={() => handleClockIn(s.id)} 
                                                 disabled={isUpdating}
-                                                className="text-sm bg-success-600 text-white px-3 py-1 rounded-md hover:bg-success-700 disabled:bg-neutral-400 font-semibold active:scale-95 transition-transform"
+                                                className="text-sm bg-secondary text-white px-3 py-1 rounded-md hover:bg-secondary-dark disabled:bg-neutral-400 font-semibold"
                                             >
                                                 {isUpdating ? '...' : 'Clock In'}
                                             </button>
@@ -549,7 +549,7 @@ const ManageStaff: React.FC = () => {
                                             <button 
                                                 onClick={() => handleClockOut(s.id)} 
                                                 disabled={isUpdating}
-                                                className="text-sm bg-danger-100 text-danger-700 font-semibold px-3 py-1 rounded-md hover:bg-danger-600 hover:text-white disabled:bg-neutral-400 active:scale-95 transition-all"
+                                                className="text-sm bg-danger-light text-danger-dark font-semibold px-3 py-1 rounded-md hover:bg-danger-dark hover:text-white disabled:bg-neutral-400"
                                             >
                                                 {isUpdating ? '...' : 'Clock Out'}
                                             </button>
@@ -599,14 +599,14 @@ const AddStaffModal: React.FC<{onClose: () => void; onAdded: () => void}> = ({on
 
     const staffRoles = Object.values(UserRole).filter(r => r !== UserRole.PATIENT);
     const showDepartment = role === UserRole.DOCTOR || role === UserRole.NURSE;
-    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow";
 
     return (
-         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-md">
                  <div className="flex justify-between items-center p-5 border-b border-neutral-200">
-                    <h2 className="text-xl font-bold text-neutral-800">Add New Staff Member</h2>
-                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                    <h2 className="text-xl font-bold text-neutral-900">Add New Staff Member</h2>
+                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="p-6 space-y-4">
@@ -623,9 +623,9 @@ const AddStaffModal: React.FC<{onClose: () => void; onAdded: () => void}> = ({on
                         )}
                         <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className={inputClass}/>
                     </div>
-                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                         <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400">
                             {isLoading ? "Adding..." : "Add Staff"}
                         </button>
                     </div>
@@ -648,10 +648,10 @@ const DoctorDashboard: React.FC = () => {
     const todaysAppointments = appointments.filter(a => a.date === new Date().toISOString().split('T')[0]);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">Doctor's Dashboard</h1>
-            <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
+            <h1 className="text-3xl font-bold text-neutral-900">Doctor's Dashboard</h1>
+            <div className="bg-white p-6 rounded-lg shadow-soft border border-neutral-200/50">
                 <h2 className="text-xl font-semibold mb-4 text-neutral-800">Today's Appointments ({todaysAppointments.length})</h2>
                  <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
@@ -663,11 +663,11 @@ const DoctorDashboard: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {todaysAppointments.length > 0 ? todaysAppointments.map((a, index) => 
-                            <tr key={a.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {todaysAppointments.length > 0 ? todaysAppointments.map(a => 
+                            <tr key={a.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3 text-neutral-800">{a.patientName}</td>
                                 <td className="p-3 text-neutral-800">{a.time}</td>
-                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${a.status === 'Scheduled' ? 'bg-warning-100 text-warning-800' : a.status === 'Completed' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>{a.status}</span></td>
+                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${a.status === 'Scheduled' ? 'bg-warning-light text-warning-dark' : a.status === 'Completed' ? 'bg-success-light text-success-dark' : 'bg-danger-light text-danger-dark'}`}>{a.status}</span></td>
                             </tr>) : 
                             <tr><td colSpan={3} className="p-4 text-center text-neutral-500">No appointments scheduled for today.</td></tr>
                             }
@@ -693,12 +693,12 @@ const DoctorAppointments: React.FC = () => {
     }, [fetchAppointments]);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">All Appointments</h1>
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <h1 className="text-3xl font-bold text-neutral-900">All Appointments</h1>
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <table className="w-full text-left">
-                     <thead className="bg-neutral-50">
+                     <thead className="bg-neutral-100">
                         <tr className="border-b-2 border-neutral-200">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
@@ -708,13 +708,13 @@ const DoctorAppointments: React.FC = () => {
                         </tr>
                     </thead>
                      <tbody>
-                        {appointments.map((app, index) => (
-                            <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {appointments.map(app => (
+                            <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3 text-neutral-800">{app.patientName}</td>
                                 <td className="p-3 text-neutral-800">{app.date}</td>
                                 <td className="p-3 text-neutral-800">{app.time}</td>
-                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${app.status === 'Scheduled' ? 'bg-warning-100 text-warning-800' : app.status === 'Completed' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>{app.status}</span></td>
-                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="font-semibold text-primary-600 hover:underline">View Record</button></td>
+                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${app.status === 'Scheduled' ? 'bg-warning-light text-warning-dark' : app.status === 'Completed' ? 'bg-success-light text-success-dark' : 'bg-danger-light text-danger-dark'}`}>{app.status}</span></td>
+                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="font-semibold text-primary hover:underline">View Record</button></td>
                             </tr>
                         ))}
                      </tbody>
@@ -733,8 +733,8 @@ interface MedicalHistory {
 }
 
 const TriageInfoDisplay: React.FC<{triageData: TriageInfo}> = ({ triageData }) => (
-    <div className="border-2 border-primary-200 bg-primary-50 p-4 rounded-lg">
-        <h3 className="font-bold text-lg mb-2 text-primary-700">Triage Information (from Nurse)</h3>
+    <div className="border-2 border-primary/50 bg-primary-light p-4 rounded-lg">
+        <h3 className="font-bold text-lg mb-2 text-primary-dark">Triage Information (from Nurse)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
                 <h4 className="font-semibold text-neutral-800">Vitals</h4>
@@ -842,15 +842,15 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
 
 
     return (
-         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-4xl max-h-full flex flex-col animate-fade-in-up">
+         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-4xl max-h-full flex flex-col">
                  <div className="flex justify-between items-start p-5 border-b border-neutral-200">
                     <div>
-                        <h2 className="text-2xl font-bold text-neutral-800">Patient Record: {history?.patientInfo?.name}</h2>
+                        <h2 className="text-2xl font-bold text-neutral-900">Patient Record: {history?.patientInfo?.name}</h2>
                         <p className="text-neutral-500">ABHA ID: {history?.patientInfo?.abhaId}</p>
                         <p className="text-neutral-500">Current Appointment: {appointment.date} at {appointment.time}</p>
                     </div>
-                     <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                     <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
                
                 <div className="p-6 space-y-6 overflow-y-auto">
@@ -861,7 +861,7 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
                         <div className="border p-4 rounded-lg">
                             <h3 className="font-bold text-lg mb-2 text-neutral-800">Current Appointment Notes</h3>
                             <p className="text-sm text-neutral-600 whitespace-pre-wrap mb-2">{appointment.notes || "No notes for this appointment yet."}</p>
-                            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className="w-full p-2 border border-neutral-300 rounded focus:ring-primary-500/50 focus:border-primary-500" placeholder="Add new notes..."></textarea>
+                            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className="w-full p-2 border border-neutral-300 rounded focus:ring-primary/50 focus:border-primary" placeholder="Add new notes..."></textarea>
                         </div>
                         
                         <div className="border p-4 rounded-lg space-y-4">
@@ -870,14 +870,14 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
                                 <label className="font-semibold text-neutral-700 block mb-1">Order Lab Tests</label>
                                 <div className="flex space-x-2">
                                     <input type="text" value={labTestOrder} onChange={e => setLabTestOrder(e.target.value)} className="flex-1 p-2 border rounded border-neutral-300" placeholder="e.g., CBC, Lipid Panel..."/>
-                                    <button onClick={() => handleOrderTests(TestType.LAB)} disabled={isOrderingTests || !labTestOrder.trim()} className="px-4 py-2 bg-secondary-500 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Order Lab</button>
+                                    <button onClick={() => handleOrderTests(TestType.LAB)} disabled={isOrderingTests || !labTestOrder.trim()} className="px-4 py-2 bg-accent text-white rounded-lg font-semibold disabled:bg-neutral-400">Order Lab</button>
                                 </div>
                             </div>
                              <div>
                                 <label className="font-semibold text-neutral-700 block mb-1">Order Radiology/Scans</label>
                                 <div className="flex space-x-2">
                                     <input type="text" value={radioTestOrder} onChange={e => setRadioTestOrder(e.target.value)} className="flex-1 p-2 border rounded border-neutral-300" placeholder="e.g., Chest X-Ray, MRI Brain..."/>
-                                    <button onClick={() => handleOrderTests(TestType.RADIOLOGY)} disabled={isOrderingTests || !radioTestOrder.trim()} className="px-4 py-2 bg-secondary-500 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Order Scan</button>
+                                    <button onClick={() => handleOrderTests(TestType.RADIOLOGY)} disabled={isOrderingTests || !radioTestOrder.trim()} className="px-4 py-2 bg-accent text-white rounded-lg font-semibold disabled:bg-neutral-400">Order Scan</button>
                                 </div>
                             </div>
                             <div>
@@ -888,7 +888,7 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
                                     <input type="text" value={newPrescription.dosage} onChange={e => setNewPrescription({...newPrescription, dosage: e.target.value})} className="p-2 border rounded border-neutral-300" placeholder="Dosage"/>
                                     <input type="text" value={newPrescription.instructions} onChange={e => setNewPrescription({...newPrescription, instructions: e.target.value})} className="p-2 border rounded border-neutral-300" placeholder="Instructions"/>
                                 </div>
-                                <button onClick={handleAddPrescription} disabled={isPrescribing || !newPrescription.medication.trim()} className="px-4 py-2 mt-2 bg-accent-500 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Add Prescription</button>
+                                <button onClick={handleAddPrescription} disabled={isPrescribing || !newPrescription.medication.trim()} className="px-4 py-2 mt-2 bg-secondary text-white rounded-lg font-semibold disabled:bg-neutral-400">Add Prescription</button>
                             </div>
                         </div>
 
@@ -900,7 +900,7 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
                                 <h4 className="font-semibold text-md mt-2 text-neutral-800">Test Results</h4>
                                 {history.tests.map(t => <div key={t.id} className="text-sm p-2 bg-neutral-100 rounded text-neutral-700">
                                     <strong>{t.requestDate}:</strong> {t.testName} ({t.status}) - Result: {t.result || 'N/A'}
-                                    {t.imageUrl && <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary-600 hover:underline font-semibold">[View Image]</a>}
+                                    {t.imageUrl && <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary hover:underline font-semibold">[View Image]</a>}
                                     </div>)}
                                 <h4 className="font-semibold text-md mt-2 text-neutral-800">Prescriptions</h4>
                                 {history.prescriptions.map(p => <div key={p.id} className="text-sm p-2 bg-neutral-100 rounded text-neutral-700"><strong>{p.date}:</strong> {p.medication} (x{p.quantity}) ({p.dosage}) - Dr. {p.doctorName}</div>)}
@@ -910,10 +910,10 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
                 ) : <p>Loading medical history...</p>}
                 </div>
 
-                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
-                    <button onClick={() => handleUpdate()} disabled={isUpdating || !notes} className="px-4 py-2 bg-primary-600 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Save Notes</button>
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
+                    <button onClick={() => handleUpdate()} disabled={isUpdating || !notes} className="px-4 py-2 bg-primary text-white rounded-lg font-semibold disabled:bg-neutral-400">Save Notes</button>
                     {appointment.status === 'Scheduled' && (
-                         <button onClick={() => handleUpdate('Completed')} disabled={isUpdating} className="px-4 py-2 bg-success-600 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Mark as Completed</button>
+                         <button onClick={() => handleUpdate('Completed')} disabled={isUpdating} className="px-4 py-2 bg-secondary text-white rounded-lg font-semibold disabled:bg-neutral-400">Mark as Completed</button>
                     )}
                 </div>
             </div>
@@ -931,11 +931,11 @@ const NurseDashboard: React.FC = () => {
     }, []);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">Nurse Dashboard</h1>
+            <h1 className="text-3xl font-bold text-neutral-900">Nurse Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card title="Patients Awaiting Triage" value={triageCount} icon={ICONS.tasks} color="bg-primary-100 text-primary-600" />
+                <Card title="Patients Awaiting Triage" value={triageCount} icon={ICONS.tasks} color="bg-primary-light text-primary-dark" />
             </div>
         </div>
     );
@@ -954,12 +954,12 @@ const NurseTriageQueue: React.FC = () => {
     }, [fetchQueue]);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">Triage Queue</h1>
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <h1 className="text-3xl font-bold text-neutral-900">Triage Queue</h1>
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <table className="w-full text-left">
-                    <thead className="bg-neutral-50">
+                    <thead className="bg-neutral-100">
                         <tr className="border-b-2 border-neutral-200">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Department</th>
@@ -968,12 +968,12 @@ const NurseTriageQueue: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {queue.length > 0 ? queue.map((app, index) => (
-                            <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {queue.length > 0 ? queue.map(app => (
+                            <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3 text-neutral-800 font-medium">{app.patientName}</td>
                                 <td className="p-3 text-neutral-800">{app.departmentName}</td>
                                 <td className="p-3 text-neutral-800">{app.date} at {app.time}</td>
-                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 font-semibold active:scale-95 transition-transform">Start Triage</button></td>
+                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="bg-primary text-white px-3 py-1 rounded-md hover:bg-primary-dark font-semibold">Start Triage</button></td>
                             </tr>
                         )) : <tr><td colSpan={4} className="p-4 text-center text-neutral-500">The triage queue is empty.</td></tr>}
                     </tbody>
@@ -1030,16 +1030,16 @@ const TriageModal: React.FC<{appointment: Appointment, onClose: () => void, onCo
         }
     };
     
-    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow";
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-2xl max-h-full flex flex-col animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-2xl max-h-full flex flex-col">
                 <div className="flex justify-between items-start p-5 border-b border-neutral-200">
-                    <h2 className="text-2xl font-bold text-neutral-800">Triage: {appointment.patientName}</h2>
-                    <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                    <h2 className="text-2xl font-bold text-neutral-900">Triage: {appointment.patientName}</h2>
+                    <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
-                <form id="triage-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+                <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
                     <fieldset className="border p-4 rounded-lg">
                         <legend className="font-semibold px-2 text-neutral-700">Vitals</legend>
                         <div className="grid grid-cols-2 gap-4">
@@ -1066,9 +1066,9 @@ const TriageModal: React.FC<{appointment: Appointment, onClose: () => void, onCo
                         </select>
                     </div>
                 </form>
-                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                     <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                    <button type="submit" form="triage-form" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                    <button type="submit" form="triage-form" disabled={isLoading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400">
                       {isLoading ? "Submitting..." : "Submit Triage & Assign"}
                     </button>
                 </div>
@@ -1104,19 +1104,19 @@ const TestDashboard: React.FC<{type: TestType; title: string}> = ({ type, title 
     };
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">{title}</h1>
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <h1 className="text-3xl font-bold text-neutral-900">{title}</h1>
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <table className="w-full text-left">
-                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Test Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Request Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th></tr></thead>
+                    <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Test Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Request Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th></tr></thead>
                     <tbody>
-                        {requests.map((req, index) => (
-                            <tr key={req.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {requests.map(req => (
+                            <tr key={req.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3">{req.patientName}</td>
                                 <td className="p-3">{req.testName}</td>
                                 <td className="p-3">{req.requestDate}</td>
-                                <td className="p-3"><button onClick={() => setSelectedTest(req)} className="font-semibold text-primary-600 hover:underline">Update Result</button></td>
+                                <td className="p-3"><button onClick={() => setSelectedTest(req)} className="font-semibold text-primary hover:underline">Update Result</button></td>
                             </tr>
                         ))}
                     </tbody>
@@ -1133,18 +1133,18 @@ const TestDashboard: React.FC<{type: TestType; title: string}> = ({ type, title 
 const UpdateResultModal: React.FC<{test: TestRequest; onClose: () => void; onUpdate: (result: string) => void}> = ({ test, onClose, onUpdate }) => {
     const [result, setResult] = useState('');
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-md">
                 <div className="p-5 border-b border-neutral-200">
-                  <h2 className="text-xl font-bold text-neutral-800">Update Result for {test.testName}</h2>
+                  <h2 className="text-xl font-bold text-neutral-900">Update Result for {test.testName}</h2>
                   <p className="text-sm text-neutral-500">Patient: {test.patientName}</p>
                 </div>
                 <div className="p-6">
                   <textarea value={result} onChange={e => setResult(e.target.value)} rows={4} className="w-full p-2 border border-neutral-300 rounded-lg" placeholder="Enter test result..."></textarea>
                 </div>
-                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                     <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                    <button onClick={() => onUpdate(result)} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold active:scale-95 transition-transform">Save Result</button>
+                    <button onClick={() => onUpdate(result)} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold">Save Result</button>
                 </div>
             </div>
         </div>
@@ -1180,22 +1180,22 @@ const UpdateRadiologyResultModal: React.FC<{test: TestRequest; onClose: () => vo
     }
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-             <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+             <div className="bg-white rounded-lg shadow-lifted w-full max-w-md">
                 <div className="p-5 border-b border-neutral-200">
-                    <h2 className="text-xl font-bold text-neutral-800">Update Radiology Result</h2>
+                    <h2 className="text-xl font-bold text-neutral-900">Update Radiology Result</h2>
                     <p className="text-sm text-neutral-500">Patient: {test.patientName} | Test: {test.testName}</p>
                 </div>
                 <div className="p-6 space-y-4">
                     <textarea value={result} onChange={e => setResult(e.target.value)} rows={4} className="w-full p-2 border rounded border-neutral-300" placeholder="Enter findings..."></textarea>
                     <div>
                         <label className="block mb-2 text-sm font-medium text-neutral-700">Upload Image (X-Ray, Scan, etc.)</label>
-                        <input type="file" accept="image/*" onChange={handleFileChange} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200"/>
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-light file:text-primary-dark hover:file:bg-primary/20"/>
                     </div>
                 </div>
-                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                     <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                    <button onClick={handleSave} disabled={isUploading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">{isUploading ? 'Saving...' : 'Save Result'}</button>
+                    <button onClick={handleSave} disabled={isUploading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400">{isUploading ? 'Saving...' : 'Save Result'}</button>
                 </div>
             </div>
         </div>
@@ -1206,15 +1206,15 @@ const ICUDashboard: React.FC = () => {
     const [beds, setBeds] = useState<ICUBed[]>([]);
     useEffect(() => { api.getICUBeds().then(setBeds); }, []);
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">ICU Bed Status</h1>
+            <h1 className="text-3xl font-bold text-neutral-900">ICU Bed Status</h1>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {beds.map((bed, index) => (
-                    <div key={bed.id} className={`p-4 rounded-lg shadow-soft text-center border animate-fade-in-up ${bed.isOccupied ? 'bg-danger-50 border-danger-200' : 'bg-success-50 border-success-200'}`} style={{ animationDelay: `${index * 50}ms` }}>
-                        <p className="font-bold text-lg text-neutral-800">{bed.roomNumber}</p>
+                {beds.map(bed => (
+                    <div key={bed.id} className={`p-4 rounded-lg shadow-soft text-center border ${bed.isOccupied ? 'bg-danger-light border-danger-dark/20' : 'bg-success-light border-success-dark/20'}`}>
+                        <p className="font-bold text-lg text-neutral-900">{bed.roomNumber}</p>
                         <p className="text-sm text-neutral-600">{bed.roomType}</p>
-                        <p className={`mt-2 font-semibold text-sm ${bed.isOccupied ? 'text-danger-700' : 'text-success-700'}`}>{bed.isOccupied ? `Occupied: ${bed.patientName}` : 'Available'}</p>
+                        <p className={`mt-2 font-semibold text-sm ${bed.isOccupied ? 'text-danger-dark' : 'text-success-dark'}`}>{bed.isOccupied ? `Occupied: ${bed.patientName}` : 'Available'}</p>
                     </div>
                 ))}
             </div>
@@ -1246,10 +1246,10 @@ const DispenseModal: React.FC<{prescription: Prescription, onClose: () => void, 
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-lg">
                 <div className="p-5 border-b border-neutral-200">
-                  <h2 className="text-xl font-bold text-neutral-800">Dispense Medication</h2>
+                  <h2 className="text-xl font-bold text-neutral-900">Dispense Medication</h2>
                 </div>
                 <form onSubmit={handleSubmit}>
                   <div className="p-6">
@@ -1272,15 +1272,15 @@ const DispenseModal: React.FC<{prescription: Prescription, onClose: () => void, 
                             step="0.01"
                             value={price}
                             onChange={e => setPrice(e.target.value)}
-                            className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50"
+                            className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50"
                             placeholder="Enter total price"
                             required
                         />
                     </div>
                   </div>
-                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                         <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400">
                             {isLoading ? "Processing..." : "Dispense & Bill"}
                         </button>
                     </div>
@@ -1305,14 +1305,14 @@ const PharmacyDashboard: React.FC = () => {
     }, [fetchData]);
 
     return (
-         <div className="space-y-8 animate-fade-in-up">
+         <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">Pharmacy Dashboard</h1>
-             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <h1 className="text-3xl font-bold text-neutral-900">Pharmacy Dashboard</h1>
+             <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <h2 className="text-xl font-semibold mb-2 p-2">Pending Prescriptions</h2>
                 <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200 text-sm">
+                        <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200 text-sm">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Patient</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">ABHA ID</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Medication</th>
@@ -1324,28 +1324,28 @@ const PharmacyDashboard: React.FC = () => {
                             {pending.length === 0 && (
                                 <tr><td colSpan={6} className="text-center p-4 text-neutral-500">No pending prescriptions.</td></tr>
                             )}
-                            {pending.map((p, index) => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-50/50 text-sm animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {pending.map(p => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-light/30 text-sm">
                                 <td className="p-3">{p.patientName}</td>
                                 <td className="p-3">{p.patientAbhaId}</td>
                                 <td className="p-3">{p.medication}</td>
                                 <td className="p-3">{p.quantity}</td>
                                 <td className="p-3">{p.doctorName}</td>
                                 <td className="p-3">
-                                    <button onClick={() => setSelectedPrescription(p)} className="bg-primary-600 text-white px-3 py-1 text-xs rounded-md hover:bg-primary-700 font-semibold active:scale-95 transition-transform">Dispense</button>
+                                    <button onClick={() => setSelectedPrescription(p)} className="bg-primary text-white px-3 py-1 text-xs rounded-md hover:bg-primary-dark font-semibold">Dispense</button>
                                 </td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                  <h2 className="text-xl font-semibold mb-2 p-2">Inventory</h2>
                  <table className="w-full text-left">
-                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                    <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200">
                         <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Quantity</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Cost Price</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Selling Price</th>
                     </tr></thead>
                     <tbody>
-                        {stock.map((med, index) => <tr key={med.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {stock.map(med => <tr key={med.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                             <td className="p-3">{med.name}</td><td className="p-3">{med.quantity}</td>
                             <td className="p-3">${med.costPrice.toFixed(2)}</td><td className="p-3">${med.sellingPrice.toFixed(2)}</td>
                         </tr>)}
@@ -1383,18 +1383,18 @@ const HRDashboard: React.FC = () => {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-neutral-800">HR Dashboard: Staff Attendance ({today})</h1>
-             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+            <h1 className="text-3xl font-bold text-neutral-900">HR Dashboard: Staff Attendance ({today})</h1>
+             <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                  <table className="w-full text-left">
-                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                    <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200">
                         <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Staff Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Role</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Clock In</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Clock Out</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Work Hours</th>
                     </tr></thead>
                     <tbody>
-                        {staff.map((s, index) => {
+                        {staff.map(s => {
                             const record = attendance.find(a => a.staffId === s.id);
-                            return (<tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            return (<tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3">{s.name}</td><td className="p-3">{s.role}</td>
                                 <td className="p-3">{record?.inTime || 'N/A'}</td>
                                 <td className="p-3">{record?.outTime || 'N/A'}</td>
@@ -1439,13 +1439,13 @@ const AddBillModal: React.FC<{onClose: () => void, onAdded: () => void}> = ({ on
         }
     };
     
-    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow";
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-lg">
                  <div className="p-5 border-b border-neutral-200">
-                  <h2 className="text-xl font-bold text-neutral-800">Add New Patient Bill</h2>
+                  <h2 className="text-xl font-bold text-neutral-900">Add New Patient Bill</h2>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="p-6 space-y-4">
@@ -1456,9 +1456,9 @@ const AddBillModal: React.FC<{onClose: () => void, onAdded: () => void}> = ({ on
                         <input type="text" placeholder="Bill Details (e.g., Consultation Fee)" value={details} onChange={e => setDetails(e.target.value)} required className={inputClass}/>
                         <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} required min="0.01" step="0.01" className={inputClass}/>
                     </div>
-                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                         <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400">
                             {isLoading ? "Adding..." : "Add Bill"}
                         </button>
                     </div>
@@ -1474,14 +1474,14 @@ const PatientBillDetailsModal: React.FC<{patient: { id: string, name: string }, 
     const totalDue = patientBills.filter(b => b.status === 'Unpaid').reduce((sum, bill) => sum + bill.amount, 0);
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-3xl max-h-[90vh] flex flex-col animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-3xl max-h-[90vh] flex flex-col">
                 <div className="p-5 border-b bg-neutral-50 rounded-t-xl flex justify-between items-center">
                     <div>
-                        <h2 className="text-2xl font-bold text-neutral-800">Billing Statement</h2>
+                        <h2 className="text-2xl font-bold text-neutral-900">Billing Statement</h2>
                         <p className="text-neutral-600">For Patient: <span className="font-semibold">{patient.name}</span></p>
                     </div>
-                    <button onClick={onClose} className="text-3xl text-neutral-400 hover:text-danger-600 transition-colors">&times;</button>
+                    <button onClick={onClose} className="text-3xl text-neutral-400 hover:text-danger-dark transition-colors">&times;</button>
                 </div>
                 
                 <div className="p-6 flex-grow overflow-y-auto">
@@ -1497,12 +1497,12 @@ const PatientBillDetailsModal: React.FC<{patient: { id: string, name: string }, 
                             </thead>
                             <tbody>
                                 {patientBills.map(b => (
-                                    <tr key={b.id} className="border-b border-neutral-200 hover:bg-primary-50/50">
+                                    <tr key={b.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                         <td className="p-3 text-neutral-600 whitespace-nowrap">{b.date}</td>
                                         <td className="p-3 text-neutral-800">{b.details}</td>
                                         <td className="p-3 text-neutral-900 font-mono text-right">${b.amount.toFixed(2)}</td>
                                         <td className="p-3 text-center">
-                                            <span className={`px-3 py-1 text-xs font-bold rounded-full ${b.status === 'Paid' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>
+                                            <span className={`px-3 py-1 text-xs font-bold rounded-full ${b.status === 'Paid' ? 'bg-success-light text-success-dark' : 'bg-danger-light text-danger-dark'}`}>
                                                 {b.status.toUpperCase()}
                                             </span>
                                         </td>
@@ -1521,7 +1521,7 @@ const PatientBillDetailsModal: React.FC<{patient: { id: string, name: string }, 
                 {patientBills.length > 0 && (
                     <div className="p-5 border-t bg-neutral-50 rounded-b-xl text-right space-y-1">
                         <p className="text-lg">Total Billed: <span className="font-bold text-neutral-900 w-32 inline-block text-right">${totalBilled.toFixed(2)}</span></p>
-                        <p className="text-xl">Amount Due: <span className="font-bold text-danger-600 bg-danger-100 px-2 py-1 rounded w-32 inline-block text-right">${totalDue.toFixed(2)}</span></p>
+                        <p className="text-xl">Amount Due: <span className="font-bold text-danger-dark bg-danger-light px-2 py-1 rounded w-32 inline-block text-right">${totalDue.toFixed(2)}</span></p>
                     </div>
                 )}
             </div>
@@ -1568,25 +1568,25 @@ const FinanceDashboard: React.FC = () => {
     const patientSummaries = Object.values(patientBillSummary);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-neutral-800">Finance Dashboard</h1>
-                <button onClick={() => setShowAddBillModal(true)} className="bg-accent-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-accent-600 font-semibold active:scale-95 transition-transform">
+                <h1 className="text-3xl font-bold text-neutral-900">Finance Dashboard</h1>
+                <button onClick={() => setShowAddBillModal(true)} className="bg-secondary text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-secondary-dark font-semibold">
                     {ICONS.add}
                     <span>Add Patient Bill</span>
                 </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div className="animate-fade-in-up"><Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-success-100 text-success-600" /></div>
-                 <div className="animate-fade-in-up" style={{ animationDelay: '100ms'}}><Card title="Medication Cost" value={`$${summary.totalCost.toFixed(2)}`} icon={ICONS.billing} color="bg-warning-100 text-warning-600" /></div>
-                 <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}><Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-primary-100 text-primary-600" /></div>
+                 <Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-success-light text-success-dark" />
+                 <Card title="Medication Cost" value={`$${summary.totalCost.toFixed(2)}`} icon={ICONS.billing} color="bg-warning-light text-warning-dark" />
+                 <Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-primary-light text-primary-dark" />
             </div>
-             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+             <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <h2 className="text-xl font-semibold mb-2 p-2">Patient Billing Summary</h2>
                  <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50">
+                        <thead className="bg-neutral-100">
                             <tr className="border-b-2 border-neutral-200">
                                 <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient Name</th>
                                 <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm text-right">Total Billed</th>
@@ -1595,15 +1595,15 @@ const FinanceDashboard: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {patientSummaries.map((s: any, index: number) => (
-                                <tr key={s.patientId} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {patientSummaries.map((s: any) => (
+                                <tr key={s.patientId} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                     <td className="p-3 font-medium">{s.patientName}</td>
                                     <td className="p-3 text-right">${s.totalBilled.toFixed(2)}</td>
-                                    <td className="p-3 font-extrabold text-danger-600 text-right">${s.totalDue.toFixed(2)}</td>
+                                    <td className="p-3 font-extrabold text-danger-dark text-right">${s.totalDue.toFixed(2)}</td>
                                     <td className="p-3 text-center">
                                         <button 
                                             onClick={() => setSelectedPatient({ id: s.patientId, name: s.patientName })} 
-                                            className="text-sm bg-primary-100 text-primary-700 font-semibold px-3 py-1 rounded-md hover:bg-primary-200 transition-colors"
+                                            className="text-sm bg-primary-light text-primary-dark font-semibold px-3 py-1 rounded-md hover:bg-blue-200 transition-colors"
                                         >
                                             View Details
                                         </button>
@@ -1614,18 +1614,18 @@ const FinanceDashboard: React.FC = () => {
                     </table>
                 </div>
             </div>
-             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+             <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <h2 className="text-xl font-semibold mb-2 p-2">Medication Profit & Loss</h2>
                  <table className="w-full text-left">
-                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Cost</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Revenue</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Profit</th></tr></thead>
+                    <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Cost</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Revenue</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Profit</th></tr></thead>
                     <tbody>
-                        {financeData?.medicationProfit.map((item: any, index: number) => <tr key={item.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {financeData?.medicationProfit.map((item: any) => <tr key={item.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                             <td className="p-3">{item.medication}</td>
                             <td className="p-3">{item.patientName}</td>
                             <td className="p-3">{item.date}</td>
                             <td className="p-3">${item.costPrice.toFixed(2)}</td>
                             <td className="p-3">${item.sellingPrice.toFixed(2)}</td>
-                            <td className={`p-3 font-bold ${item.profit > 0 ? 'text-success-700' : 'text-danger-700'}`}>${item.profit.toFixed(2)}</td>
+                            <td className={`p-3 font-bold ${item.profit > 0 ? 'text-success-dark' : 'text-danger-dark'}`}>${item.profit.toFixed(2)}</td>
                         </tr>)}
                     </tbody>
                 </table>
@@ -1671,23 +1671,23 @@ const ManagerDashboard: React.FC = () => {
     const onDutyStaff = attendance.filter(a => a.inTime && !a.outTime);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8">
             <AttendanceTracker />
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-neutral-800">Manager's Overview</h1>
-                <button onClick={downloadFinancials} disabled={!financeData} className="bg-primary-600 text-white px-4 py-2 rounded-lg disabled:bg-neutral-400 font-semibold active:scale-95 transition-transform">Download Financial Report</button>
+                <h1 className="text-3xl font-bold text-neutral-900">Manager's Overview</h1>
+                <button onClick={downloadFinancials} disabled={!financeData} className="bg-primary text-white px-4 py-2 rounded-lg disabled:bg-neutral-400 font-semibold">Download Financial Report</button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div className="animate-fade-in-up"><Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-success-100 text-success-600" /></div>
-                 <div className="animate-fade-in-up" style={{ animationDelay: '100ms'}}><Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-primary-100 text-primary-600" /></div>
-                 <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}><Card title="Staff on Duty" value={onDutyStaff.length} icon={ICONS.users} color="bg-secondary-100 text-secondary-600" /></div>
+                 <Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-success-light text-success-dark" />
+                 <Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-primary-light text-primary-dark" />
+                 <Card title="Staff on Duty" value={onDutyStaff.length} icon={ICONS.users} color="bg-warning-light text-warning-dark" />
             </div>
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-2 p-2">Doctor Workload (Active Patients)</h2>
                     <ul>{workload.map(w => <li key={w.doctorId} className="flex justify-between p-2 border-b"><span>{w.doctorName}</span><span className="font-bold">{w.patientCount} patients</span></li>)}</ul>
                 </div>
-                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-2 p-2">Staff on Duty Today</h2>
                     <ul>
                         {onDutyStaff.length > 0 ? (
@@ -1760,7 +1760,7 @@ const AttendanceTracker: React.FC = () => {
     const hasClockedOut = attendance && attendance.outTime;
 
     return (
-        <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200 flex items-center justify-between">
+        <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50 flex items-center justify-between">
             <div>
                 <h2 className="text-xl font-semibold text-neutral-800">Today's Attendance</h2>
                 <p className="text-sm text-neutral-500">
@@ -1770,13 +1770,13 @@ const AttendanceTracker: React.FC = () => {
             </div>
             <div>
                 {!hasClockedIn && (
-                    <button onClick={handleClockIn} disabled={isLoading} className="bg-success-600 text-white px-4 py-2 rounded-lg hover:bg-success-700 font-semibold active:scale-95 transition-transform">Check In</button>
+                    <button onClick={handleClockIn} disabled={isLoading} className="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-secondary-dark font-semibold">Check In</button>
                 )}
                 {hasClockedIn && !hasClockedOut && (
-                    <button onClick={handleClockOut} disabled={isLoading} className="bg-danger-100 text-danger-700 px-4 py-2 rounded-lg hover:bg-danger-600 hover:text-white font-semibold active:scale-95 transition-all">Check Out</button>
+                    <button onClick={handleClockOut} disabled={isLoading} className="bg-danger-light text-danger-dark px-4 py-2 rounded-lg hover:bg-danger-dark hover:text-white font-semibold">Check Out</button>
                 )}
                 {hasClockedIn && hasClockedOut && (
-                    <span className="text-success-700 font-semibold">Completed for today</span>
+                    <span className="text-success-dark font-semibold">Completed for today</span>
                 )}
             </div>
         </div>

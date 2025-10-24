@@ -14,7 +14,7 @@ const PatientPortal: React.FC = () => {
         { to: '/patient/history', label: 'Medical History', icon: ICONS.records },
         { to: '/patient/billing', label: 'Billing', icon: ICONS.billing },
         { to: '/patient/insurance', label: 'Insurance', icon: ICONS.insurance },
-        { to: '/patient/queries', label: 'Support Queries', icon: ICONS.query },
+        { to: '/patient/queries', label: 'Queries & Complaints', icon: ICONS.query },
     ];
 
     return (
@@ -22,7 +22,7 @@ const PatientPortal: React.FC = () => {
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-8 flex-1 text-neutral-800 animate-fade-in">
+                <main className="p-8 flex-1 text-neutral-800">
                     <Routes>
                         <Route index element={<PatientDashboard />} />
                         <Route path="appointments" element={<PatientAppointments />} />
@@ -51,11 +51,11 @@ const PatientDashboard: React.FC = () => {
     }, [user]);
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
-            <h1 className="text-4xl font-bold text-neutral-800">Welcome, {user?.name}!</h1>
+        <div className="space-y-8">
+            <h1 className="text-4xl font-bold text-neutral-900">Welcome, {user?.name}!</h1>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                 <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200 lg:col-span-3 animate-fade-in-up">
-                    <h2 className="text-xl font-semibold text-neutral-800 mb-4">Demographic Information</h2>
+                 <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200/50 lg:col-span-3">
+                    <h2 className="text-xl font-semibold text-neutral-900 mb-4">Demographic Information</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 text-sm">
                         <div><strong className="block text-neutral-500 font-medium">Full Name</strong>{user?.name}</div>
                         <div><strong className="block text-neutral-500 font-medium">ABHA ID</strong>{user?.abhaId}</div>
@@ -74,29 +74,25 @@ const PatientDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                 <div className="lg:col-span-2 animate-fade-in-up" style={{ animationDelay: '100ms'}}>
                  {upcomingAppointment ? (
-                    <div className="bg-primary-50 border border-primary-200 p-6 rounded-xl shadow-soft h-full">
-                        <h2 className="text-xl font-semibold text-primary-700 mb-2">Upcoming Appointment</h2>
+                    <div className="bg-primary-light border border-primary/50 p-6 rounded-xl shadow-soft lg:col-span-2">
+                        <h2 className="text-xl font-semibold text-primary-dark mb-2">Upcoming Appointment</h2>
                         <p className="text-neutral-700"><strong>With:</strong> {upcomingAppointment.doctorName || 'To be assigned'}</p>
                         <p className="text-neutral-700"><strong>Department:</strong> {upcomingAppointment.departmentName}</p>
-                        <p className="text-neutral-700"><strong>Date:</strong> {new Date(upcomingAppointment.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {upcomingAppointment.time}</p>
+                        <p className="text-neutral-700"><strong>Date:</strong> {upcomingAppointment.date} at {upcomingAppointment.time}</p>
                         <p className="text-neutral-700"><strong>Status:</strong> <span className="font-semibold">{upcomingAppointment.status}</span></p>
                     </div>
                 ) : (
-                    <div className="bg-success-50 border border-success-200 p-6 rounded-xl shadow-soft h-full">
-                        <h2 className="text-xl font-semibold text-success-700 mb-2">No Upcoming Appointments</h2>
+                    <div className="bg-success-light border border-success/50 p-6 rounded-xl shadow-soft lg:col-span-2">
+                        <h2 className="text-xl font-semibold text-success-dark mb-2">No Upcoming Appointments</h2>
                         <p className="text-neutral-700">You are all clear! You can book a new appointment if needed.</p>
                     </div>
                 )}
-                </div>
-                <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}>
-                    <Link to="/patient/appointments" className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200 hover:shadow-lifted transition-all duration-300 text-center flex flex-col justify-center items-center hover:-translate-y-1.5 h-full hover:border-primary-300">
-                        <span className="text-primary-500">{React.cloneElement(ICONS.appointment, { className: 'w-10 h-10' })}</span>
-                        <h3 className="text-lg font-semibold mt-2 text-neutral-800">Book Appointment</h3>
-                        <p className="text-sm text-neutral-500">Schedule a new visit</p>
-                    </Link>
-                </div>
+                <Link to="/patient/appointments" className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200/50 hover:shadow-lifted transition-shadow text-center flex flex-col justify-center items-center hover:-translate-y-1 transform duration-300">
+                    <span className="text-primary">{React.cloneElement(ICONS.appointment, { className: 'w-10 h-10' })}</span>
+                    <h3 className="text-lg font-semibold mt-2 text-neutral-900">Book Appointment</h3>
+                    <p className="text-sm text-neutral-500">Schedule a new visit</p>
+                </Link>
             </div>
         </div>
     );
@@ -120,10 +116,10 @@ const PatientAppointments: React.FC = () => {
   
   const getStatusChip = (status: Appointment['status']) => {
     switch(status) {
-        case 'Scheduled': return 'bg-warning-100 text-warning-800';
-        case 'Completed': return 'bg-success-100 text-success-800';
-        case 'Cancelled': return 'bg-danger-100 text-danger-800';
-        case 'Pending Triage': return 'bg-primary-100 text-primary-800';
+        case 'Scheduled': return 'bg-warning-light text-warning-dark';
+        case 'Completed': return 'bg-success-light text-success-dark';
+        case 'Cancelled': return 'bg-danger-light text-danger-dark';
+        case 'Pending Triage': return 'bg-primary-light text-primary-dark';
         default: return 'bg-neutral-200 text-neutral-800';
     }
   }
@@ -134,17 +130,17 @@ const PatientAppointments: React.FC = () => {
   }
 
   return (
-    <div className="animate-fade-in-up">
+    <>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-neutral-800">My Appointments</h1>
-        <button onClick={() => setShowModal(true)} className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-700 font-semibold shadow-soft hover:shadow-lg transition-all active:scale-95">
+        <h1 className="text-3xl font-bold text-neutral-900">My Appointments</h1>
+        <button onClick={() => setShowModal(true)} className="bg-primary text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-dark font-semibold shadow-soft hover:shadow-lg transition-all">
           {ICONS.add}
           <span>Book New Appointment</span>
         </button>
       </div>
-      <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+      <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
         <table className="w-full text-left">
-          <thead className="bg-neutral-50">
+          <thead className="bg-neutral-100">
             <tr className="border-b-2 border-neutral-200">
               <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Doctor</th>
               <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Department</th>
@@ -154,8 +150,8 @@ const PatientAppointments: React.FC = () => {
           </thead>
           <tbody>
             {appointments.length === 0 && <tr><td colSpan={4} className="p-4 text-center text-neutral-500">No appointments found.</td></tr>}
-            {appointments.map((app, index) => (
-              <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+            {appointments.map(app => (
+              <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                 <td className="p-3 text-neutral-800 font-medium">{app.doctorName || 'To be assigned'}</td>
                 <td className="p-3 text-neutral-600">{app.departmentName}</td>
                 <td className="p-3 text-neutral-600">{app.date} at {app.time}</td>
@@ -170,7 +166,7 @@ const PatientAppointments: React.FC = () => {
         </table>
       </div>
       {showModal && <AppointmentModal onClose={() => setShowModal(false)} onBooked={handleBooked} />}
-    </div>
+    </>
   );
 };
 
@@ -243,16 +239,16 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
         setIsLoading(false);
     };
     
-    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow";
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg max-h-full flex flex-col animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-lg max-h-full flex flex-col">
                 <div className="flex justify-between items-center p-5 border-b border-neutral-200">
-                    <h2 className="text-xl font-bold text-neutral-800">Book Appointment</h2>
-                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                    <h2 className="text-xl font-bold text-neutral-900">Book Appointment</h2>
+                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
-                <form id="appointment-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+                <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
                     <div>
                         <h3 className="font-semibold text-neutral-700 mb-2">Appointment Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -267,11 +263,11 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
                     
                     <div className="border-t pt-4">
                         <label className="flex items-center space-x-3 cursor-pointer">
-                            <input type="checkbox" checked={requireRoom} onChange={e => setRequireRoom(e.target.checked)} className="h-5 w-5 rounded text-primary-600 focus:ring-primary-500"/>
+                            <input type="checkbox" checked={requireRoom} onChange={e => setRequireRoom(e.target.checked)} className="h-5 w-5 rounded text-primary focus:ring-primary"/>
                             <span className="font-semibold text-neutral-700">Require room booking for this appointment?</span>
                         </label>
                         {requireRoom && (
-                            <div className="mt-4 space-y-4 border p-4 rounded-md bg-neutral-50 animate-fade-in">
+                            <div className="mt-4 space-y-4 border p-4 rounded-md bg-neutral-50">
                                 <h3 className="font-semibold text-neutral-700">Room Booking Details</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                      <select value={roomBooking.type} onChange={e => setRoomBooking({...roomBooking, type: e.target.value})} required className={inputClass}>
@@ -282,15 +278,15 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
                                     <input type="date" value={roomBooking.checkOut} onChange={e => setRoomBooking({...roomBooking, checkOut: e.target.value})} required className={inputClass} min={roomBooking.checkIn || new Date().toISOString().split("T")[0]}/>
                                 </div>
                                 {totalRoomCost > 0 && (
-                                    <p className="font-semibold text-lg text-right text-neutral-800">Room Cost: <span className="text-primary-600">${totalRoomCost.toFixed(2)}</span></p>
+                                    <p className="font-semibold text-lg text-right text-neutral-800">Room Cost: <span className="text-primary">${totalRoomCost.toFixed(2)}</span></p>
                                 )}
                             </div>
                         )}
                     </div>
                 </form>
-                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                     <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold transition-colors">Cancel</button>
-                    <button type="submit" form="appointment-form" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 transition-all active:scale-95">
+                    <button type="submit" form="appointment-form" disabled={isLoading} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark font-semibold disabled:bg-neutral-400 transition-colors">
                       {isLoading ? "Requesting..." : "Request Appointment"}
                     </button>
                 </div>
@@ -322,13 +318,13 @@ const PatientHistory: React.FC = () => {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
-            <h1 className="text-3xl font-bold text-neutral-800 mb-6">My Medical History</h1>
+        <div className="space-y-8">
+            <h1 className="text-3xl font-bold text-neutral-900 mb-6">My Medical History</h1>
             <div className="space-y-6">
-                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-2 p-2">Test Results</h2>
                      <table className="w-full text-left">
-                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                        <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Test</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Type</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
@@ -336,7 +332,7 @@ const PatientHistory: React.FC = () => {
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Result</th>
                         </tr></thead>
                         <tbody>
-                            {tests.map((t, index) => <tr key={t.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {tests.map(t => <tr key={t.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3 text-neutral-800 font-medium">{t.testName}</td>
                                 <td className="p-3 text-neutral-600">{t.type}</td>
                                 <td className="p-3 text-neutral-600">{t.requestDate}</td>
@@ -344,24 +340,24 @@ const PatientHistory: React.FC = () => {
                                 <td className="p-3 text-neutral-600">
                                     {t.result || 'N/A'}
                                     {t.imageUrl && (
-                                        <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary-600 hover:underline text-sm font-semibold">[View Image]</a>
+                                        <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary hover:underline text-sm font-semibold">[View Image]</a>
                                     )}
                                 </td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
-                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-2 p-2">Prescriptions</h2>
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                        <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Dosage</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Doctor</th>
                         </tr></thead>
                         <tbody>
-                            {prescriptions.map((p, index) => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {prescriptions.map(p => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3 text-neutral-600">{p.date}</td>
                                 <td className="p-3 text-neutral-800 font-medium">{p.medication}</td>
                                 <td className="p-3 text-neutral-600">{p.dosage}</td>
@@ -370,18 +366,18 @@ const PatientHistory: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-2 p-2">Discharge Summaries</h2>
                     <table className="w-full text-left">
-                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                        <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200">
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Generated On</th>
                             <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                         </tr></thead>
                         <tbody>
-                            {summaries.map((s, index) => <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            {summaries.map(s => <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                                 <td className="p-3 text-neutral-600">{new Date(s.generationDate).toLocaleString()}</td>
                                 <td className="p-3">
-                                    <button onClick={() => downloadSummary(s)} className="font-semibold text-primary-600 hover:underline">Download Summary</button>
+                                    <button onClick={() => downloadSummary(s)} className="font-semibold text-primary hover:underline">Download Summary</button>
                                 </td>
                             </tr>)}
                             {summaries.length === 0 && (
@@ -415,31 +411,31 @@ const PaymentModal: React.FC<{bill: Bill, onClose: () => void, onPaymentSuccess:
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lifted w-full max-w-md">
                 <div className="p-5 border-b border-neutral-200">
-                    <h2 className="text-xl font-bold text-neutral-800">Complete Your Payment</h2>
+                    <h2 className="text-xl font-bold text-neutral-900">Complete Your Payment</h2>
                 </div>
                 <div className="p-6 space-y-4">
                     <div className="bg-neutral-50 p-4 rounded-md border">
                         <p className="text-neutral-600"><strong>Details:</strong> {bill.details}</p>
-                        <p className="text-2xl font-bold mt-2 text-neutral-800">Amount: ${bill.amount.toFixed(2)}</p>
+                        <p className="text-2xl font-bold mt-2 text-neutral-900">Amount: ${bill.amount.toFixed(2)}</p>
                     </div>
                     <div className="space-y-2">
                         <label className="font-semibold text-neutral-700">Select Payment Method:</label>
                         <div className="flex flex-col space-y-2">
                             {['Credit Card', 'Debit Card', 'UPI'].map(method => (
-                                <label key={method} className="flex items-center p-3 border rounded-lg has-[:checked]:bg-primary-50 has-[:checked]:border-primary-500 transition-colors cursor-pointer">
-                                    <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={() => setPaymentMethod(method)} className="mr-3 h-4 w-4 text-primary-600 focus:ring-primary-500"/>
+                                <label key={method} className="flex items-center p-3 border rounded-lg has-[:checked]:bg-primary-light has-[:checked]:border-primary transition-colors cursor-pointer">
+                                    <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={() => setPaymentMethod(method)} className="mr-3 h-4 w-4 text-primary focus:ring-primary"/>
                                     <span className="font-medium">{method}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-lg">
                     <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
-                    <button onClick={handlePay} disabled={isLoading} className="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-all">
+                    <button onClick={handlePay} disabled={isLoading} className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark font-semibold disabled:bg-neutral-400">
                         {isLoading ? "Processing..." : `Pay $${bill.amount.toFixed(2)}`}
                     </button>
                 </div>
@@ -467,11 +463,11 @@ const PatientBilling: React.FC = () => {
     };
 
     return (
-        <div className="animate-fade-in-up">
-            <h1 className="text-3xl font-bold text-neutral-800 mb-6">Billing & Payments</h1>
-            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+        <div>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-6">Billing & Payments</h1>
+            <div className="bg-white p-4 rounded-lg shadow-soft border border-neutral-200/50">
                 <table className="w-full text-left">
-                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                    <thead className="bg-neutral-100"><tr className="border-b-2 border-neutral-200">
                         <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
                         <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Details</th>
                         <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Amount</th>
@@ -479,18 +475,18 @@ const PatientBilling: React.FC = () => {
                         <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                     </tr></thead>
                     <tbody>
-                        {bills.map((b, index) => <tr key={b.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                        {bills.map(b => <tr key={b.id} className="border-b border-neutral-200 hover:bg-primary-light/30">
                             <td className="p-3 text-neutral-600">{b.date}</td>
                             <td className="p-3 text-neutral-800 font-medium">{b.details}</td>
                             <td className="p-3 text-neutral-800 font-medium">${b.amount.toFixed(2)}</td>
                             <td className="p-3">
-                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>
+                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-success-light text-success-dark' : 'bg-danger-light text-danger-dark'}`}>
                                     {b.status}
                                 </span>
                             </td>
                             <td className="p-3">
                                 {b.status === 'Unpaid' && (
-                                    <button onClick={() => setBillToPay(b)} className="bg-success-600 text-white px-3 py-1 text-xs rounded-md hover:bg-success-700 font-semibold active:scale-95 transition-transform">
+                                    <button onClick={() => setBillToPay(b)} className="bg-secondary text-white px-3 py-1 text-xs rounded-md hover:bg-secondary-dark font-semibold">
                                         Pay Now
                                     </button>
                                 )}
@@ -581,9 +577,9 @@ const PatientInsurance: React.FC = () => {
     };
 
     return (
-        <div className="animate-fade-in-up">
-            <h1 className="text-3xl font-bold text-neutral-800 mb-6">Insurance Details</h1>
-            <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
+        <div>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-6">Insurance Details</h1>
+            <div className="bg-white p-6 rounded-lg shadow-soft border border-neutral-200/50">
                 {isLoading && <p>Loading details...</p>}
 
                 {!isLoading && details && (
@@ -614,7 +610,7 @@ const PatientInsurance: React.FC = () => {
                     />
                     <label
                         htmlFor="qr-upload"
-                        className={`cursor-pointer inline-flex items-center space-x-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold shadow-soft active:scale-95 ${isLoading ? 'bg-neutral-400 cursor-not-allowed' : ''}`}
+                        className={`cursor-pointer inline-flex items-center space-x-2 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-semibold shadow-soft ${isLoading ? 'bg-neutral-400 cursor-not-allowed' : ''}`}
                     >
                         {ICONS.upload}
                         <span>{details ? 'Update Insurance QR Code' : 'Upload Insurance QR Code'}</span>
@@ -667,20 +663,20 @@ const PatientQueriesAndComplaints: React.FC = () => {
     
     const getStatusChip = (status: PatientQuery['status']) => {
         switch(status) {
-            case 'Submitted': return 'bg-primary-100 text-primary-800';
-            case 'In Review': return 'bg-warning-100 text-warning-800';
-            case 'Resolved': return 'bg-success-100 text-success-800';
+            case 'Submitted': return 'bg-primary-light text-primary-dark';
+            case 'In Review': return 'bg-warning-light text-warning-dark';
+            case 'Resolved': return 'bg-success-light text-success-dark';
             default: return 'bg-neutral-200 text-neutral-800';
         }
     };
     
-    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow";
 
     return (
-        <div className="animate-fade-in-up">
-            <h1 className="text-3xl font-bold text-neutral-800 mb-6">Support Queries</h1>
+        <div>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-6">Queries & Complaints</h1>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
+                <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-4">Submit a New Query</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
@@ -691,19 +687,19 @@ const PatientQueriesAndComplaints: React.FC = () => {
                             <label htmlFor="message" className="block text-sm font-medium text-neutral-700">Message</label>
                             <textarea id="message" value={message} onChange={e => setMessage(e.target.value)} required rows={5} className={`mt-1 ${inputClass}`}></textarea>
                         </div>
-                        <button type="submit" disabled={isLoading} className="w-full bg-primary-600 font-semibold text-white py-2.5 rounded-lg hover:bg-primary-700 disabled:bg-neutral-400 transition-all active:scale-95">
+                        <button type="submit" disabled={isLoading} className="w-full bg-primary font-semibold text-white py-2.5 rounded-lg hover:bg-primary-dark disabled:bg-neutral-400 transition-colors">
                             {isLoading ? "Submitting..." : "Submit"}
                         </button>
                     </form>
                 </div>
-                <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
+                <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-soft border border-neutral-200/50">
                     <h2 className="text-xl font-semibold mb-4">Your Past Queries</h2>
                     <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                         {queries.length === 0 ? (
                             <p className="text-neutral-500">You haven't submitted any queries yet.</p>
                         ) : (
-                            queries.slice().reverse().map((q, index) => (
-                                <div key={q.id} className="border border-neutral-200 p-4 rounded-md animate-fade-in-up" style={{ animationDelay: `${index * 75}ms` }}>
+                            queries.slice().reverse().map(q => (
+                                <div key={q.id} className="border border-neutral-200 p-4 rounded-md">
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <p className="font-bold text-neutral-800">{q.subject}</p>

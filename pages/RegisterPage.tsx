@@ -72,21 +72,19 @@ const RegisterPage: React.FC = () => {
     }
   };
   
-  const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow bg-neutral-50";
+  const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-shadow";
   const selectClass = inputClass;
-  const fieldsetClass = "grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-lg border-neutral-200";
-  const legendClass = "px-2 font-semibold text-neutral-600 text-sm";
 
   return (
-    <div className="min-h-screen bg-neutral-100 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-lifted border border-neutral-200/80 p-8 space-y-6 animate-fade-in-up">
+    <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-lifted border border-neutral-200/50 p-8 space-y-6">
         <div className="text-center">
-            <h2 className="text-3xl font-bold text-neutral-800">Patient Registration</h2>
+            <h2 className="text-3xl font-bold text-neutral-900">Patient Registration</h2>
             <p className="mt-2 text-sm text-neutral-500">Create your account for {HOSPITAL_NAME}</p>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
-            <fieldset className={fieldsetClass}>
-                <legend className={legendClass}>Basic Details</legend>
+            <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-md">
+                <legend className="px-2 font-semibold text-neutral-700">Basic Details</legend>
                 <input name="name" type="text" placeholder="Full Name" required onChange={handleChange} className={`${inputClass} md:col-span-2`}/>
                 <select name="gender" required onChange={handleChange} className={selectClass}>
                     <option value="Male">Male</option>
@@ -103,48 +101,48 @@ const RegisterPage: React.FC = () => {
                 </select>
             </fieldset>
 
-            <fieldset className={fieldsetClass}>
-                <legend className={legendClass}>Contact & Identification</legend>
+            <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-md">
+                <legend className="px-2 font-semibold text-neutral-700">Contact & Identification</legend>
                 <input name="contactNumber" type="tel" placeholder="Contact Number" required onChange={handleChange} className={inputClass}/>
                 <input name="email" type="email" placeholder="Email Address" required onChange={handleChange} className={inputClass}/>
                 <input name="abhaId" type="text" placeholder="ABHA ID" required onChange={handleChange} className={inputClass}/>
                 <input name="aadhaar" type="text" placeholder="Aadhaar Number" required onChange={handleChange} className={inputClass}/>
             </fieldset>
 
-             <fieldset className={fieldsetClass}>
-                <legend className={legendClass}>Address</legend>
+             <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-md">
+                <legend className="px-2 font-semibold text-neutral-700">Address</legend>
                 <input name="address.line1" type="text" placeholder="Address Line 1" required onChange={handleChange} className={`${inputClass} md:col-span-2`}/>
                 <input name="address.city" type="text" placeholder="City / District" required onChange={handleChange} className={inputClass}/>
                 <input name="address.state" type="text" placeholder="State" required onChange={handleChange} className={inputClass}/>
                  <input name="address.pincode" type="text" placeholder="Pincode" required onChange={handleChange} className={`${inputClass} md:col-span-2`}/>
             </fieldset>
 
-             <fieldset className={fieldsetClass}>
-                <legend className={legendClass}>Emergency Contact</legend>
+             <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-md">
+                <legend className="px-2 font-semibold text-neutral-700">Emergency Contact</legend>
                 <input name="emergencyContact.name" type="text" placeholder="Contact Name" required onChange={handleChange} className={inputClass}/>
                 <input name="emergencyContact.phone" type="tel" placeholder="Contact Phone" required onChange={handleChange} className={inputClass}/>
             </fieldset>
 
-             <fieldset className={fieldsetClass}>
-                <legend className={legendClass}>Set Password</legend>
+             <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 rounded-md">
+                <legend className="px-2 font-semibold text-neutral-700">Set Password</legend>
                 <input name="password" type="password" placeholder="Password (min 6 characters)" required onChange={handleChange} className={inputClass}/>
                 <input name="confirmPassword" type="password" placeholder="Confirm Password" required onChange={(e) => setConfirmPassword(e.target.value)} className={inputClass}/>
             </fieldset>
             
-            {error && <p className="text-sm text-danger-600 bg-danger-100 p-3 rounded-lg">{error}</p>}
-            {success && <p className="text-sm text-success-600 bg-success-100 p-3 rounded-lg">{success}</p>}
+            {error && <p className="text-sm text-danger-dark bg-danger-light p-3 rounded-lg">{error}</p>}
+            {success && <p className="text-sm text-success-dark bg-success-light p-3 rounded-lg">{success}</p>}
 
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-accent-500 hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 disabled:bg-neutral-400 transition-all duration-200 active:scale-95"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-secondary hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary disabled:bg-neutral-400 transition-colors"
             >
                 {isLoading ? 'Registering...' : 'Register'}
             </button>
         </form>
         <p className="text-center text-sm text-neutral-600">
             Already have an account?{' '}
-            <Link to="/login/patient" className="font-medium text-primary-600 hover:underline">
+            <Link to="/login/patient" className="font-medium text-primary hover:underline">
                 Login
             </Link>
         </p>

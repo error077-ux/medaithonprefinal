@@ -13,9 +13,9 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
   return (
-    <aside className="w-64 bg-slate-900 text-slate-200 p-4 flex flex-col h-screen sticky top-0">
-      <div className="mb-8 text-center p-4 border-b border-slate-700/50">
-        <h2 className="text-2xl font-bold text-white tracking-wide">Portal Menu</h2>
+    <aside className="w-64 bg-neutral-900 text-neutral-200 p-4 flex flex-col h-screen sticky top-0">
+      <div className="mb-8 text-center p-4">
+        <h2 className="text-2xl font-bold text-white">Portal Menu</h2>
       </div>
       <nav>
         <ul>
@@ -25,15 +25,12 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
                 to={item.to}
                 end
                 className={({ isActive }) =>
-                  `flex items-center space-x-4 p-3 my-1 rounded-lg transition-all duration-200 font-semibold ${
-                    isActive 
-                      ? "bg-primary-500 text-white shadow-lg shadow-primary-500/20" 
-                      : "text-slate-400 hover:bg-slate-700/50 hover:text-white"
+                  `flex items-center space-x-3 p-3 my-1 rounded-lg transition-all duration-200 font-semibold ${
+                    isActive ? "bg-primary text-white shadow-lg" : "text-neutral-400 hover:bg-neutral-700/50 hover:text-white"
                   }`
                 }
               >
-                {/* FIX: Cast icon to a ReactElement that accepts className to resolve TypeScript error. */}
-                {React.cloneElement(item.icon as React.ReactElement<{ className: string }>, { className: "w-6 h-6" })}
+                {item.icon}
                 <span>{item.label}</span>
               </NavLink>
             </li>

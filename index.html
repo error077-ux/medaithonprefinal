@@ -18,74 +18,47 @@
             },
             colors: {
               'primary': {
-                50: '#EEF2FF',
-                100: '#E0E7FF',
-                200: '#C7D2FE',
-                300: '#A5B4FC',
-                400: '#818CF8',
-                500: '#6366F1',
-                600: '#4F46E5',
-                700: '#4338CA',
-                800: '#3730A3',
-                900: '#312E81',
-                DEFAULT: '#6366F1',
+                light: '#EBF5FF',
+                DEFAULT: '#3B82F6',
+                dark: '#1E40AF',
               },
               'secondary': {
-                50: '#FFFBEB',
-                100: '#FEF3C7',
-                200: '#FDE68A',
-                300: '#FCD34D',
-                400: '#FBBF24',
-                500: '#F59E0B',
-                600: '#D97706',
-                700: '#B45309',
-                800: '#92400E',
-                900: '#78350F',
-                DEFAULT: '#F59E0B',
+                DEFAULT: '#10B981',
+                dark: '#047857',
               },
               'accent': {
-                50: '#F0FDFA',
-                100: '#CCFBF1',
-                200: '#99F6E4',
-                300: '#5EEAD4',
-                400: '#2DD4BF',
-                500: '#14B8A6',
-                600: '#0D9488',
-                700: '#0F766E',
-                800: '#115E59',
-                900: '#134E4A',
-                DEFAULT: '#14B8A6',
+                  DEFAULT: '#F59E0B',
+                  dark: '#B45309',
               },
               'neutral': {
-                ...tailwind.colors.slate
+                50: '#F8FAFC',
+                100: '#F1F5F9',
+                200: '#E2E8F0',
+                300: '#CBD5E1',
+                400: '#94A3B8',
+                500: '#64748B',
+                700: '#334155',
+                900: '#0F172A',
               },
-              'danger': tailwind.colors.red,
-              'success': tailwind.colors.emerald,
-              'warning': tailwind.colors.amber,
+              'danger': {
+                  light: '#FEE2E2',
+                  DEFAULT: '#EF4444',
+                  dark: '#B91C1C',
+              },
+              'success': {
+                  light: '#D1FAE5',
+                  DEFAULT: '#10B981',
+                  dark: '#047857',
+              },
+              'warning': {
+                  light: '#FEF3C7',
+                  DEFAULT: '#FBBF24',
+                  dark: '#B45309',
+              }
             },
             boxShadow: {
               'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
               'lifted': '0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07)',
-              'glow-primary': '0 0 15px 0 rgba(99, 102, 241, 0.3)',
-            },
-            keyframes: {
-              'fade-in': {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              'fade-in-up': {
-                '0%': { opacity: '0', transform: 'translateY(1rem)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-              'slide-down': {
-                 '0%': { transform: 'translateY(-100%)' },
-                 '100%': { transform: 'translateY(0)' },
-              },
-            },
-            animation: {
-              'fade-in': 'fade-in 0.4s ease-out forwards',
-              'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
-              'slide-down': 'slide-down 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
             }
           }
         }
@@ -102,7 +75,7 @@
 }
 </script>
 </head>
-  <body class="bg-neutral-100 font-sans text-neutral-800">
+  <body class="bg-neutral-50 font-sans text-neutral-800">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
