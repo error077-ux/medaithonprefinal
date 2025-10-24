@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { ICONS, HOSPITAL_NAME } from '../constants';
 import { UserRole } from '../types';
 
+// FIX: Added missing UserRole entries to satisfy the Record type.
 const roleDisplay: Record<UserRole, string> = {
   [UserRole.PATIENT]: 'Patient',
   [UserRole.DOCTOR]: 'Doctor',
@@ -11,6 +12,10 @@ const roleDisplay: Record<UserRole, string> = {
   [UserRole.ADMIN]: 'Administrator',
   [UserRole.LAB_TECHNICIAN]: 'Lab Technician',
   [UserRole.RADIOLOGIST]: 'Radiologist',
+  [UserRole.MANAGER]: 'Manager',
+  [UserRole.HR]: 'HR',
+  [UserRole.FINANCE]: 'Finance',
+  [UserRole.PHARMACIST]: 'Pharmacist',
 };
 
 const Header: React.FC = () => {

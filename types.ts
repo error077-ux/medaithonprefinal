@@ -5,6 +5,10 @@ export enum UserRole {
   ADMIN = 'ADMIN',
   LAB_TECHNICIAN = 'LAB_TECHNICIAN',
   RADIOLOGIST = 'RADIOLOGIST',
+  MANAGER = 'MANAGER',
+  HR = 'HR',
+  FINANCE = 'FINANCE',
+  PHARMACIST = 'PHARMACIST',
 }
 
 export interface User {
@@ -73,22 +77,29 @@ export interface TestRequest {
   result?: string;
   resultDate?: string;
   requestDate: string;
+  imageUrl?: string;
 }
 
 export interface Prescription {
   id: string;
   patientId: string;
+  patientName: string;
+  patientAbhaId: string;
   doctorId: string;
   doctorName: string;
   date: string;
   medication: string;
   dosage: string;
   instructions: string;
+  quantity: number;
+  price?: number;
+  status: 'Pending' | 'Dispensed';
 }
 
 export interface Bill {
   id: string;
   patientId: string;
+  patientName: string;
   date: string;
   amount: number;
   details: string;
@@ -127,4 +138,30 @@ export interface DischargeSummary {
   appointments: Appointment[];
   tests: TestRequest[];
   prescriptions: Prescription[];
+}
+
+export interface AttendanceRecord {
+  id: string;
+  staffId: string;
+  staffName: string;
+  date: string;
+  inTime?: string;
+  outTime?: string;
+}
+
+export interface MedicationStock {
+  id: string;
+  name: string;
+  costPrice: number;
+  sellingPrice: number;
+  quantity: number;
+}
+
+export interface ICUBed {
+  id:string;
+  roomNumber: string;
+  roomType: 'Private' | 'Semi-Private';
+  isOccupied: boolean;
+  patientId?: string;
+  patientName?: string;
 }

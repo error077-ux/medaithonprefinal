@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Header from '../components/Header';
@@ -244,7 +245,12 @@ const PatientRecords: React.FC = () => {
                                 <td className="p-2 text-gray-600">{t.type}</td>
                                 <td className="p-2 text-gray-600">{t.requestDate}</td>
                                 <td className="p-2 text-gray-600">{t.status}</td>
-                                <td className="p-2 text-gray-600">{t.result || 'N/A'}</td>
+                                <td className="p-2 text-gray-600">
+                                    {t.result || 'N/A'}
+                                    {t.imageUrl && (
+                                        <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-brand-blue hover:underline text-sm">[View Image]</a>
+                                    )}
+                                </td>
                             </tr>)}
                         </tbody>
                     </table>
