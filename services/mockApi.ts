@@ -570,7 +570,90 @@ export const bookRoom = async (bookingData: Omit<RoomBooking, 'id'>): Promise<Ro
     return newBooking;
 };
 
+// --- ATTENDANCE ---
+export const getTodaysAttendance = async (staffId: string): Promise<AttendanceRecord | null> => {
+    const attendance = getData<AttendanceRecord[]>('hms_attendance');
+    const today = new Date().toISOString().split('T')[0];
+    return attendance.find(a => a.staffId === staffId && a.date === today) || null;
+}
+
+export const clockIn = async (staffId: string): Promise<AttendanceRecord> => {
+    const attendance = getData<AttendanceRecord[]>('hms_attendance');
+    const users = getData<User[]>('hms_users');
+    const today = new Date().toISOString().split('T')[0];
+    
+    const existing = attendance.find(a => a.staffId === staffId && a.date === today);
+    if (existing) {
+        return existing; // Already clocked in
+    }
+
+    const staffMember = users.find(u => u.id === staffId);
+    if (!staffMember) throw new Error("Staff member not found");
+
+    const newRecord: AttendanceRecord = {
+        id: `att${attendance.length + 1}`,
+        staffId,
+        staffName: staffMember.name,
+        date: today,
+        inTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+    };
+
+    attendance.push(newRecord);
+    setData('hms_attendance', attendance);
+    return newRecord;
+};
+
+export const clockOut = async (staffId: string): Promise<AttendanceRecord> => {
+    const attendance = getData<AttendanceRecord[]>('hms_attendance');
+    const today = new Date().toISOString().split('T')[0];
+
+    const recordIndex = attendance.findIndex(a => a.staffId === staffId && a.date === today);
+    if (recordIndex === -1) {
+        throw new Error("Cannot clock out. No clock-in record found for today.");
+    }
+    
+    if (attendance[recordIndex].outTime) {
+        return attendance[recordIndex]; // Already clocked out
+    }
+
+    attendance[recordIndex].outTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    
+    setData('hms_attendance', attendance);
+    return attendance[recordIndex];
+};
+
+
+// --- BILLING ---
+export const addBill = async (data: { patientId: string; details: string; amount: number }): Promise<Bill> => {
+    const bills = getData<Bill[]>('hms_bills');
+    const users = getData<User[]>('hms_users');
+    const patient = users.find(u => u.id === data.patientId);
+    if (!patient) throw new Error("Patient not found");
+
+    const newBill: Bill = {
+        id: `bill${bills.length + 1}`,
+        patientId: data.patientId,
+        patientName: patient.name,
+        date: new Date().toISOString().split('T')[0],
+        amount: data.amount,
+        details: data.details,
+        status: 'Unpaid',
+    };
+    bills.push(newBill);
+    setData('hms_bills', bills);
+    return newBill;
+};
+
+export const payBill = async (billId: string): Promise<Bill> => {
+    const bills = getData<Bill[]>('hms_bills');
+    const index = bills.findIndex(b => b.id === billId);
+    if (index === -1) throw new Error("Bill not found");
+
+    bills[index].status = 'Paid';
+    setData('hms_bills', bills);
+    return bills[index];
+};
+
+
 // Unused but defined in types
 export const getNurseTasks = async (nurseId: string): Promise<NurseTask[]> => [];
-export const clockIn = async (staffId: string): Promise<AttendanceRecord> => { throw new Error("Not implemented"); };
-export const clockOut = async (staffId: string): Promise<AttendanceRecord> => { throw new Error("Not implemented"); };

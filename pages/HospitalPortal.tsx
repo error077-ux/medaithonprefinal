@@ -313,6 +313,7 @@ const AdminDashboard: React.FC = () => {
 
     return (
         <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <Card title="Total Appointments" value={stats.totalAppointments} icon={ICONS.appointment} color="bg-blue-100 text-blue-600" />
@@ -439,18 +440,52 @@ const QueryResponseModal: React.FC<{query: PatientQuery, onClose: () => void, on
 
 const ManageStaff: React.FC = () => {
     const [staff, setStaff] = useState<User[]>([]);
+    const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const [updatingStaffId, setUpdatingStaffId] = useState<string | null>(null);
 
-    const fetchStaff = useCallback(() => {
+    const fetchData = useCallback(() => {
         api.getAllStaff().then(setStaff).catch(console.error);
+        api.getAttendance().then(allAttendance => {
+            const today = new Date().toISOString().split('T')[0];
+            setAttendance(allAttendance.filter(a => a.date === today));
+        }).catch(console.error);
     }, []);
 
     useEffect(() => {
-        fetchStaff();
-    }, [fetchStaff]);
+        fetchData();
+    }, [fetchData]);
+
+    const handleClockIn = async (staffId: string) => {
+        setUpdatingStaffId(staffId);
+        try {
+            await api.clockIn(staffId);
+            fetchData();
+        } catch (error) {
+            console.error("Failed to clock in staff", error);
+            alert("Clock in failed.");
+        } finally {
+            setUpdatingStaffId(null);
+        }
+    };
+    
+    const handleClockOut = async (staffId: string) => {
+        setUpdatingStaffId(staffId);
+        try {
+            await api.clockOut(staffId);
+            fetchData();
+        } catch (error) {
+            console.error("Failed to clock out staff", error);
+            alert("Clock out failed.");
+        } finally {
+            setUpdatingStaffId(null);
+        }
+    };
+
 
     return (
-        <>
+        <div>
+            <AttendanceTracker />
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-800">Manage Staff</h1>
                  <button onClick={() => setShowModal(true)} className="bg-brand-blue text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-brand-blue-dark">
@@ -460,14 +495,71 @@ const ManageStaff: React.FC = () => {
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md">
                 <table className="w-full text-left">
-                    <thead><tr className="border-b"><th className="p-3">Staff ID</th><th className="p-3">Name</th><th className="p-3">Role</th><th className="p-3">Department</th></tr></thead>
+                    <thead>
+                        <tr className="border-b">
+                            <th className="p-3">Staff ID</th>
+                            <th className="p-3">Name</th>
+                            <th className="p-3">Role</th>
+                            <th className="p-3">Department</th>
+                            <th className="p-3">Status</th>
+                            <th className="p-3">Clock In</th>
+                            <th className="p-3">Clock Out</th>
+                            <th className="p-3">Action</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        {staff.map(s => <tr key={s.id} className="border-b hover:bg-gray-50"><td className="p-3">{s.id}</td><td className="p-3">{s.name}</td><td className="p-3">{s.role}</td><td className="p-3">{s.department || 'N/A'}</td></tr>)}
+                        {staff.map(s => {
+                            const record = attendance.find(a => a.staffId === s.id);
+                            let status = <span className="text-gray-500">Absent</span>;
+                            if (record) {
+                                if (record.outTime) {
+                                    status = <span className="text-green-600">Off Duty</span>;
+                                } else if (record.inTime) {
+                                    status = <span className="text-blue-600">On Duty</span>;
+                                }
+                            }
+                            const isUpdating = updatingStaffId === s.id;
+
+                            return (
+                                <tr key={s.id} className="border-b hover:bg-gray-50">
+                                    <td className="p-3">{s.id}</td>
+                                    <td className="p-3">{s.name}</td>
+                                    <td className="p-3">{s.role}</td>
+                                    <td className="p-3">{s.department || 'N/A'}</td>
+                                    <td className="p-3 font-semibold">{status}</td>
+                                    <td className="p-3">{record?.inTime || '--:--'}</td>
+                                    <td className="p-3">{record?.outTime || '--:--'}</td>
+                                    <td className="p-3">
+                                        {!record?.inTime && (
+                                            <button 
+                                                onClick={() => handleClockIn(s.id)} 
+                                                disabled={isUpdating}
+                                                className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 disabled:bg-gray-400"
+                                            >
+                                                {isUpdating ? '...' : 'Clock In'}
+                                            </button>
+                                        )}
+                                        {record?.inTime && !record.outTime && (
+                                            <button 
+                                                onClick={() => handleClockOut(s.id)} 
+                                                disabled={isUpdating}
+                                                className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 disabled:bg-gray-400"
+                                            >
+                                                {isUpdating ? '...' : 'Clock Out'}
+                                            </button>
+                                        )}
+                                        {record?.inTime && record.outTime && (
+                                            <span className="text-sm text-gray-500">Done</span>
+                                        )}
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
-            {showModal && <AddStaffModal onClose={() => setShowModal(false)} onAdded={fetchStaff} />}
-        </>
+            {showModal && <AddStaffModal onClose={() => setShowModal(false)} onAdded={fetchData} />}
+        </div>
     )
 };
 
@@ -543,6 +635,7 @@ const DoctorDashboard: React.FC = () => {
 
     return (
         <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Doctor's Dashboard</h1>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4 text-gray-800">Today's Appointments ({todaysAppointments.length})</h2>
@@ -586,7 +679,8 @@ const DoctorAppointments: React.FC = () => {
     }, [fetchAppointments]);
 
     return (
-        <>
+        <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">All Appointments</h1>
             <div className="bg-white p-4 rounded-lg shadow-md">
                 <table className="w-full text-left">
@@ -613,7 +707,7 @@ const DoctorAppointments: React.FC = () => {
                 </table>
             </div>
             {selectedAppointment && <PatientRecordModal appointment={selectedAppointment} onClose={() => setSelectedAppointment(null)} onUpdate={fetchAppointments} />}
-        </>
+        </div>
     );
 };
 
@@ -822,6 +916,7 @@ const NurseDashboard: React.FC = () => {
 
     return (
         <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Nurse Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <Card title="Patients Awaiting Triage" value={triageCount} icon={ICONS.tasks} color="bg-blue-100 text-blue-600" />
@@ -843,32 +938,33 @@ const NurseTriageQueue: React.FC = () => {
     }, [fetchQueue]);
 
     return (
-        <>
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Triage Queue</h1>
-        <div className="bg-white p-4 rounded-lg shadow-md">
-            <table className="w-full text-left">
-                <thead>
-                    <tr className="border-b">
-                        <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Patient</th>
-                        <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Department</th>
-                        <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Requested Time</th>
-                        <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {queue.length > 0 ? queue.map(app => (
-                        <tr key={app.id} className="border-b hover:bg-gray-50">
-                            <td className="p-3 text-black font-medium">{app.patientName}</td>
-                            <td className="p-3 text-black">{app.departmentName}</td>
-                            <td className="p-3 text-black">{app.date} at {app.time}</td>
-                            <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="bg-brand-blue text-white px-3 py-1 rounded hover:bg-brand-blue-dark">Start Triage</button></td>
+        <div>
+            <AttendanceTracker />
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Triage Queue</h1>
+            <div className="bg-white p-4 rounded-lg shadow-md">
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="border-b">
+                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Patient</th>
+                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Department</th>
+                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Requested Time</th>
+                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Action</th>
                         </tr>
-                    )) : <tr><td colSpan={4} className="p-3 text-center text-gray-500">The triage queue is empty.</td></tr>}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {queue.length > 0 ? queue.map(app => (
+                            <tr key={app.id} className="border-b hover:bg-gray-50">
+                                <td className="p-3 text-black font-medium">{app.patientName}</td>
+                                <td className="p-3 text-black">{app.departmentName}</td>
+                                <td className="p-3 text-black">{app.date} at {app.time}</td>
+                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="bg-brand-blue text-white px-3 py-1 rounded hover:bg-brand-blue-dark">Start Triage</button></td>
+                            </tr>
+                        )) : <tr><td colSpan={4} className="p-3 text-center text-gray-500">The triage queue is empty.</td></tr>}
+                    </tbody>
+                </table>
+            </div>
+            {selectedAppointment && <TriageModal appointment={selectedAppointment} onClose={() => setSelectedAppointment(null)} onComplete={fetchQueue} />}
         </div>
-        {selectedAppointment && <TriageModal appointment={selectedAppointment} onClose={() => setSelectedAppointment(null)} onComplete={fetchQueue} />}
-        </>
     )
 }
 
@@ -987,6 +1083,7 @@ const TestDashboard: React.FC<{type: TestType; title: string}> = ({ type, title 
 
     return (
         <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">{title}</h1>
             <div className="bg-white p-4 rounded-lg shadow-md">
                 <table className="w-full text-left">
@@ -1080,6 +1177,7 @@ const ICUDashboard: React.FC = () => {
     useEffect(() => { api.getICUBeds().then(setBeds); }, []);
     return (
         <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">ICU Bed Status</h1>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {beds.map(bed => (
@@ -1174,6 +1272,7 @@ const PharmacyDashboard: React.FC = () => {
 
     return (
          <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Pharmacy Dashboard</h1>
              <div className="bg-white p-4 rounded-lg shadow-md mb-6">
                 <h2 className="text-xl font-semibold mb-2">Pending Prescriptions</h2>
@@ -1251,6 +1350,7 @@ const HRDashboard: React.FC = () => {
 
     return (
         <div>
+            <AttendanceTracker />
             <h1 className="text-3xl font-bold text-gray-800 mb-6">HR Dashboard: Staff Attendance ({today})</h1>
              <div className="bg-white p-4 rounded-lg shadow-md">
                  <table className="w-full text-left">
@@ -1274,9 +1374,115 @@ const HRDashboard: React.FC = () => {
     );
 }
 
+const AddBillModal: React.FC<{onClose: () => void, onAdded: () => void}> = ({ onClose, onAdded }) => {
+    const [patients, setPatients] = useState<User[]>([]);
+    const [selectedPatient, setSelectedPatient] = useState('');
+    const [details, setDetails] = useState('');
+    const [amount, setAmount] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        api.getAllPatients().then(setPatients).catch(console.error);
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const parsedAmount = parseFloat(amount);
+        if (!selectedPatient || !details.trim() || isNaN(parsedAmount) || parsedAmount <= 0) {
+            alert("Please fill out all fields with valid data.");
+            return;
+        }
+        setIsLoading(true);
+        try {
+            await api.addBill({ patientId: selectedPatient, details, amount: parsedAmount });
+            onAdded();
+            onClose();
+        } catch (error) {
+            console.error("Failed to add bill:", error);
+            alert("Could not add the bill. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
+            <div className="bg-white rounded-lg p-8 w-full max-w-lg">
+                <form onSubmit={handleSubmit}>
+                    <h2 className="text-2xl font-bold mb-4">Add New Patient Bill</h2>
+                    <div className="space-y-4">
+                        <select value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required className="w-full p-2 border rounded">
+                            <option value="">Select a Patient</option>
+                            {patients.map(p => <option key={p.id} value={p.id}>{p.name} ({p.abhaId})</option>)}
+                        </select>
+                        <input type="text" placeholder="Bill Details (e.g., Consultation Fee)" value={details} onChange={e => setDetails(e.target.value)} required className="w-full p-2 border rounded"/>
+                        <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} required min="0.01" step="0.01" className="w-full p-2 border rounded"/>
+                    </div>
+                    <div className="flex justify-end space-x-2 mt-6">
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded-lg disabled:bg-gray-400">
+                            {isLoading ? "Adding..." : "Add Bill"}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+const PatientBillDetailsModal: React.FC<{patient: { id: string, name: string }, onClose: () => void, allBills: Bill[]}> = ({ patient, onClose, allBills }) => {
+    const patientBills = allBills.filter(b => b.patientId === patient.id);
+    const totalBilled = patientBills.reduce((sum, bill) => sum + bill.amount, 0);
+    const totalDue = patientBills.filter(b => b.status === 'Unpaid').reduce((sum, bill) => sum + bill.amount, 0);
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
+            <div className="bg-white rounded-lg p-8 w-full max-w-2xl max-h-[90vh] flex flex-col">
+                <div className="flex justify-between items-start">
+                    <h2 className="text-2xl font-bold mb-4">Billing Details for {patient.name}</h2>
+                    <button onClick={onClose} className="text-2xl">&times;</button>
+                </div>
+                <div className="flex-grow overflow-y-auto mb-4">
+                    <table className="w-full text-left">
+                        <thead><tr className="border-b"><th className="p-2">Date</th><th className="p-2">Details</th><th className="p-2">Amount</th><th className="p-2">Status</th></tr></thead>
+                        <tbody>
+                            {patientBills.map(b => (
+                                <tr key={b.id} className="border-b">
+                                    <td className="p-2">{b.date}</td>
+                                    <td className="p-2">{b.details}</td>
+                                    <td className="p-2">${b.amount.toFixed(2)}</td>
+                                    <td className="p-2">
+                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                            {b.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="text-right font-semibold text-lg border-t pt-4">
+                    <p>Total Billed: ${totalBilled.toFixed(2)}</p>
+                    <p className="text-red-600">Total Due: ${totalDue.toFixed(2)}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 const FinanceDashboard: React.FC = () => {
     const [financeData, setFinanceData] = useState<any>(null);
-    useEffect(() => { api.getFinancialData().then(setFinanceData); }, []);
+    const [showAddBillModal, setShowAddBillModal] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState<{ id: string; name: string } | null>(null);
+
+    const fetchData = useCallback(() => {
+        api.getFinancialData().then(setFinanceData);
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const summary = financeData ? financeData.medicationProfit.reduce((acc: any, curr: any) => {
         acc.totalRevenue += curr.sellingPrice;
@@ -1285,21 +1491,50 @@ const FinanceDashboard: React.FC = () => {
     }, { totalRevenue: 0, totalCost: 0 }) : { totalRevenue: 0, totalCost: 0 };
     summary.totalProfit = summary.totalRevenue - summary.totalCost;
 
+    const patientBillSummary = financeData ? financeData.patientPayments.reduce((acc: any, bill: Bill) => {
+        if (!acc[bill.patientId]) {
+            acc[bill.patientId] = {
+                patientId: bill.patientId,
+                patientName: bill.patientName,
+                totalBilled: 0,
+                totalDue: 0,
+            };
+        }
+        acc[bill.patientId].totalBilled += bill.amount;
+        if (bill.status === 'Unpaid') {
+            acc[bill.patientId].totalDue += bill.amount;
+        }
+        return acc;
+    }, {}) : {};
+    const patientSummaries = Object.values(patientBillSummary);
+
     return (
         <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Finance Dashboard</h1>
+            <AttendanceTracker />
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-800">Finance Dashboard</h1>
+                <button onClick={() => setShowAddBillModal(true)} className="bg-brand-green text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-brand-green-dark">
+                    {ICONS.add}
+                    <span>Add Patient Bill</span>
+                </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                  <Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-green-100 text-green-600" />
                  <Card title="Medication Cost" value={`$${summary.totalCost.toFixed(2)}`} icon={ICONS.billing} color="bg-yellow-100 text-yellow-600" />
                  <Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-blue-100 text-blue-600" />
             </div>
              <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-                <h2 className="text-xl font-semibold mb-2">Patient Payments</h2>
+                <h2 className="text-xl font-semibold mb-2">Patient Billing Summary</h2>
                  <table className="w-full text-left">
-                    <thead><tr className="border-b"><th className="p-2">Patient</th><th className="p-2">Date</th><th className="p-2">Amount</th><th className="p-2">Details</th><th className="p-2">Status</th></tr></thead>
+                    <thead><tr className="border-b"><th className="p-2">Patient Name</th><th className="p-2">Total Billed</th><th className="p-2">Amount Due</th><th className="p-2">Action</th></tr></thead>
                     <tbody>
-                        {financeData?.patientPayments.map((bill: Bill) => <tr key={bill.id} className="border-b">
-                            <td className="p-2">{bill.patientName}</td><td className="p-2">{bill.date}</td><td className="p-2">${bill.amount.toFixed(2)}</td><td className="p-2">{bill.details}</td><td className="p-2">{bill.status}</td>
+                        {patientSummaries.map((s: any) => <tr key={s.patientId} className="border-b">
+                            <td className="p-2">{s.patientName}</td>
+                            <td className="p-2">${s.totalBilled.toFixed(2)}</td>
+                            <td className="p-2 font-bold text-red-600">${s.totalDue.toFixed(2)}</td>
+                            <td className="p-2">
+                                <button onClick={() => setSelectedPatient({ id: s.patientId, name: s.patientName })} className="text-brand-blue hover:underline">View Details</button>
+                            </td>
                         </tr>)}
                     </tbody>
                 </table>
@@ -1311,7 +1546,6 @@ const FinanceDashboard: React.FC = () => {
                     <tbody>
                         {financeData?.medicationProfit.map((item: any) => <tr key={item.id} className="border-b">
                             <td className="p-2">{item.medication}</td>
-                            {/* FIX: Use patientName from the API response instead of looking up in mockUsers. */}
                             <td className="p-2">{item.patientName}</td>
                             <td className="p-2">{item.date}</td>
                             <td className="p-2">${item.costPrice.toFixed(2)}</td>
@@ -1321,6 +1555,8 @@ const FinanceDashboard: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+            {showAddBillModal && <AddBillModal onClose={() => setShowAddBillModal(false)} onAdded={fetchData} />}
+            {selectedPatient && <PatientBillDetailsModal patient={selectedPatient} onClose={() => setSelectedPatient(null)} allBills={financeData?.patientPayments || []} />}
         </div>
     );
 }
@@ -1361,6 +1597,7 @@ const ManagerDashboard: React.FC = () => {
 
     return (
         <div>
+            <AttendanceTracker />
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-800">Manager's Overview</h1>
                 <button onClick={downloadFinancials} disabled={!financeData} className="bg-brand-blue text-white px-4 py-2 rounded-lg disabled:bg-gray-400">Download Financial Report</button>
@@ -1389,5 +1626,86 @@ const ManagerDashboard: React.FC = () => {
         </div>
     );
 };
+
+const AttendanceTracker: React.FC = () => {
+    const { user } = useAuth();
+    const [attendance, setAttendance] = useState<AttendanceRecord | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchAttendance = useCallback(async () => {
+        if (!user) return;
+        setIsLoading(true);
+        try {
+            const record = await api.getTodaysAttendance(user.id);
+            setAttendance(record);
+        } catch (error) {
+            console.error("Failed to fetch attendance", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        fetchAttendance();
+    }, [fetchAttendance]);
+
+    const handleClockIn = async () => {
+        if (!user) return;
+        setIsLoading(true);
+        try {
+            const newRecord = await api.clockIn(user.id);
+            setAttendance(newRecord);
+        } catch (error) {
+            console.error("Failed to clock in", error);
+            alert("Clock in failed.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    const handleClockOut = async () => {
+        if (!user) return;
+        setIsLoading(true);
+        try {
+            const updatedRecord = await api.clockOut(user.id);
+            setAttendance(updatedRecord);
+        } catch (error) {
+            console.error("Failed to clock out", error);
+            alert("Clock out failed.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    if (isLoading) {
+        return <div className="p-4 bg-white shadow rounded-lg text-center">Loading attendance...</div>
+    }
+
+    const hasClockedIn = attendance && attendance.inTime;
+    const hasClockedOut = attendance && attendance.outTime;
+
+    return (
+        <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex items-center justify-between">
+            <div>
+                <h2 className="text-xl font-semibold text-gray-800">Today's Attendance</h2>
+                <p className="text-sm text-gray-500">
+                    {hasClockedIn ? `Checked In at: ${attendance.inTime}` : 'You have not checked in today.'}
+                    {hasClockedOut && ` | Checked Out at: ${attendance.outTime}`}
+                </p>
+            </div>
+            <div>
+                {!hasClockedIn && (
+                    <button onClick={handleClockIn} disabled={isLoading} className="bg-brand-green text-white px-4 py-2 rounded-lg hover:bg-brand-green-dark">Check In</button>
+                )}
+                {hasClockedIn && !hasClockedOut && (
+                    <button onClick={handleClockOut} disabled={isLoading} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Check Out</button>
+                )}
+                {hasClockedIn && hasClockedOut && (
+                    <span className="text-brand-green-dark font-semibold">Completed for today</span>
+                )}
+            </div>
+        </div>
+    )
+}
 
 export default HospitalPortal;

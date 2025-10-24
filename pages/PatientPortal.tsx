@@ -384,12 +384,72 @@ const PatientHistory: React.FC = () => {
         </div>
     );
 };
+const PaymentModal: React.FC<{bill: Bill, onClose: () => void, onPaymentSuccess: () => void}> = ({ bill, onClose, onPaymentSuccess }) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+
+    const handlePay = async () => {
+        setIsLoading(true);
+        try {
+            await api.payBill(bill.id);
+            alert("Payment Successful!");
+            onPaymentSuccess();
+        } catch (error) {
+            console.error("Payment failed", error);
+            alert("Payment failed. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
+            <div className="bg-white rounded-lg p-8 w-full max-w-md">
+                <h2 className="text-2xl font-bold mb-4">Complete Your Payment</h2>
+                <div className="bg-gray-50 p-4 rounded-md mb-4">
+                    <p><strong>Details:</strong> {bill.details}</p>
+                    <p className="text-2xl font-bold mt-2">Amount: ${bill.amount.toFixed(2)}</p>
+                </div>
+                <div className="space-y-2">
+                    <label className="font-semibold">Select Payment Method:</label>
+                    <div className="flex flex-col space-y-1">
+                        {['Credit Card', 'Debit Card', 'UPI'].map(method => (
+                            <label key={method} className="flex items-center p-2 border rounded-md has-[:checked]:bg-blue-50 has-[:checked]:border-brand-blue">
+                                <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={() => setPaymentMethod(method)} className="mr-2"/>
+                                {method}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+                <div className="flex justify-end space-x-2 mt-6">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
+                    <button onClick={handlePay} disabled={isLoading} className="px-4 py-2 bg-brand-green text-white rounded-lg disabled:bg-gray-400">
+                        {isLoading ? "Processing..." : "Confirm Payment"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const PatientBilling: React.FC = () => {
     const { user } = useAuth();
     const [bills, setBills] = useState<Bill[]>([]);
-    useEffect(() => {
+    const [billToPay, setBillToPay] = useState<Bill | null>(null);
+
+    const fetchBills = useCallback(() => {
         if(user) api.getPatientBills(user.id).then(setBills).catch(console.error);
     }, [user]);
+
+    useEffect(() => {
+        fetchBills();
+    }, [fetchBills]);
+    
+    const handlePaymentSuccess = () => {
+        setBillToPay(null);
+        fetchBills();
+    };
+
     return (
         <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Billing & Payments</h1>
@@ -400,21 +460,30 @@ const PatientBilling: React.FC = () => {
                         <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Details</th>
                         <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Amount</th>
                         <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Status</th>
+                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Action</th>
                     </tr></thead>
                     <tbody>
                         {bills.map(b => <tr key={b.id} className="border-b hover:bg-gray-50">
                             <td className="p-3 text-gray-600">{b.date}</td>
                             <td className="p-3 text-gray-800 font-medium">{b.details}</td>
                             <td className="p-3 text-gray-800 font-medium">${b.amount.toFixed(2)}</td>
-                        <td className="p-3">
-                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-                                {b.status}
-                            </span>
-                        </td>
+                            <td className="p-3">
+                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                    {b.status}
+                                </span>
+                            </td>
+                            <td className="p-3">
+                                {b.status === 'Unpaid' && (
+                                    <button onClick={() => setBillToPay(b)} className="bg-brand-green text-white px-3 py-1 text-xs rounded hover:bg-brand-green-dark">
+                                        Pay Now
+                                    </button>
+                                )}
+                            </td>
                         </tr>)}
                     </tbody>
                 </table>
             </div>
+            {billToPay && <PaymentModal bill={billToPay} onClose={() => setBillToPay(null)} onPaymentSuccess={handlePaymentSuccess} />}
         </div>
     )
 };

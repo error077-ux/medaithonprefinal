@@ -71,11 +71,14 @@ export const respondToQuery = mockApi.respondToQuery;
 
 // HR API
 export const getAttendance = mockApi.getAttendance;
+export const getTodaysAttendance = mockApi.getTodaysAttendance;
 export const clockIn = mockApi.clockIn;
 export const clockOut = mockApi.clockOut;
 
 // Finance API
 export const getFinancialData = mockApi.getFinancialData;
+export const addBill = mockApi.addBill;
+export const payBill = mockApi.payBill;
 
 // Manager API
 export const getDoctorWorkload = mockApi.getDoctorWorkload;
