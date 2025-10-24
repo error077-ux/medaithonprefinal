@@ -14,15 +14,15 @@ const PatientPortal: React.FC = () => {
         { to: '/patient/history', label: 'Medical History', icon: ICONS.records },
         { to: '/patient/billing', label: 'Billing', icon: ICONS.billing },
         { to: '/patient/insurance', label: 'Insurance', icon: ICONS.insurance },
-        { to: '/patient/queries', label: 'Queries & Complaints', icon: ICONS.query },
+        { to: '/patient/queries', label: 'Support Queries', icon: ICONS.query },
     ];
 
     return (
-        <div className="flex bg-brand-gray-light min-h-screen">
+        <div className="flex bg-neutral-100 min-h-screen">
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-6 flex-1 text-gray-800">
+                <main className="p-8 flex-1 text-neutral-800 animate-fade-in">
                     <Routes>
                         <Route index element={<PatientDashboard />} />
                         <Route path="appointments" element={<PatientAppointments />} />
@@ -51,48 +51,52 @@ const PatientDashboard: React.FC = () => {
     }, [user]);
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Welcome, {user?.name}!</h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div className="bg-white p-6 rounded-lg shadow-md md:col-span-3">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4">Demographic Information</h2>
+        <div className="space-y-8 animate-fade-in-up">
+            <h1 className="text-4xl font-bold text-neutral-800">Welcome, {user?.name}!</h1>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                 <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200 lg:col-span-3 animate-fade-in-up">
+                    <h2 className="text-xl font-semibold text-neutral-800 mb-4">Demographic Information</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 text-sm">
-                        <div><strong className="block text-gray-500">Full Name</strong>{user?.name}</div>
-                        <div><strong className="block text-gray-500">ABHA ID</strong>{user?.abhaId}</div>
-                        <div><strong className="block text-gray-500">Aadhaar No.</strong>{user?.aadhaar}</div>
-                        <div><strong className="block text-gray-500">Gender</strong>{user?.gender}</div>
-                        <div><strong className="block text-gray-500">Date of Birth</strong>{user?.dob}</div>
-                        <div><strong className="block text-gray-500">Blood Group</strong>{user?.bloodGroup}</div>
-                        <div><strong className="block text-gray-500">Marital Status</strong>{user?.maritalStatus}</div>
-                        <div><strong className="block text-gray-500">Contact No.</strong>{user?.contactNumber}</div>
-                        <div className="col-span-2"><strong className="block text-gray-500">Email</strong>{user?.email}</div>
-                        <div className="col-span-2"><strong className="block text-gray-500">Address</strong>
+                        <div><strong className="block text-neutral-500 font-medium">Full Name</strong>{user?.name}</div>
+                        <div><strong className="block text-neutral-500 font-medium">ABHA ID</strong>{user?.abhaId}</div>
+                        <div><strong className="block text-neutral-500 font-medium">Aadhaar No.</strong>{user?.aadhaar}</div>
+                        <div><strong className="block text-neutral-500 font-medium">Gender</strong>{user?.gender}</div>
+                        <div><strong className="block text-neutral-500 font-medium">Date of Birth</strong>{user?.dob}</div>
+                        <div><strong className="block text-neutral-500 font-medium">Blood Group</strong>{user?.bloodGroup}</div>
+                        <div><strong className="block text-neutral-500 font-medium">Marital Status</strong>{user?.maritalStatus}</div>
+                        <div><strong className="block text-neutral-500 font-medium">Contact No.</strong>{user?.contactNumber}</div>
+                        <div className="col-span-2"><strong className="block text-neutral-500 font-medium">Email</strong>{user?.email}</div>
+                        <div className="col-span-2"><strong className="block text-neutral-500 font-medium">Address</strong>
                             {user?.address ? `${user.address.line1}, ${user.address.city}, ${user.address.state} - ${user.address.pincode}` : 'N/A'}
                         </div>
-                        <div className="col-span-2"><strong className="block text-gray-500">Emergency Contact</strong>
+                        <div className="col-span-2"><strong className="block text-neutral-500 font-medium">Emergency Contact</strong>
                            {user?.emergencyContact ? `${user.emergencyContact.name} (${user.emergencyContact.phone})` : 'N/A'}
                         </div>
                     </div>
                 </div>
+                 <div className="lg:col-span-2 animate-fade-in-up" style={{ animationDelay: '100ms'}}>
                  {upcomingAppointment ? (
-                    <div className="bg-brand-blue-light p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
-                        <h2 className="text-xl font-semibold text-brand-blue-dark mb-2">Upcoming Appointment</h2>
-                        <p><strong>With:</strong> {upcomingAppointment.doctorName || 'To be assigned'}</p>
-                        <p><strong>Department:</strong> {upcomingAppointment.departmentName}</p>
-                        <p><strong>Date:</strong> {upcomingAppointment.date} at {upcomingAppointment.time}</p>
-                        <p><strong>Status:</strong> {upcomingAppointment.status}</p>
+                    <div className="bg-primary-50 border border-primary-200 p-6 rounded-xl shadow-soft h-full">
+                        <h2 className="text-xl font-semibold text-primary-700 mb-2">Upcoming Appointment</h2>
+                        <p className="text-neutral-700"><strong>With:</strong> {upcomingAppointment.doctorName || 'To be assigned'}</p>
+                        <p className="text-neutral-700"><strong>Department:</strong> {upcomingAppointment.departmentName}</p>
+                        <p className="text-neutral-700"><strong>Date:</strong> {new Date(upcomingAppointment.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {upcomingAppointment.time}</p>
+                        <p className="text-neutral-700"><strong>Status:</strong> <span className="font-semibold">{upcomingAppointment.status}</span></p>
                     </div>
                 ) : (
-                    <div className="bg-brand-green-light p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
-                        <h2 className="text-xl font-semibold text-brand-green-dark mb-2">No Upcoming Appointments</h2>
-                        <p>You are all clear! You can book a new appointment if needed.</p>
+                    <div className="bg-success-50 border border-success-200 p-6 rounded-xl shadow-soft h-full">
+                        <h2 className="text-xl font-semibold text-success-700 mb-2">No Upcoming Appointments</h2>
+                        <p className="text-neutral-700">You are all clear! You can book a new appointment if needed.</p>
                     </div>
                 )}
-                <Link to="/patient/appointments" className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center flex flex-col justify-center items-center">
-                    <span className="text-brand-blue">{ICONS.appointment}</span>
-                    <h3 className="text-lg font-semibold mt-2">Book Appointment</h3>
-                    <p className="text-sm text-gray-500">Schedule a new visit</p>
-                </Link>
+                </div>
+                <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}>
+                    <Link to="/patient/appointments" className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200 hover:shadow-lifted transition-all duration-300 text-center flex flex-col justify-center items-center hover:-translate-y-1.5 h-full hover:border-primary-300">
+                        <span className="text-primary-500">{React.cloneElement(ICONS.appointment, { className: 'w-10 h-10' })}</span>
+                        <h3 className="text-lg font-semibold mt-2 text-neutral-800">Book Appointment</h3>
+                        <p className="text-sm text-neutral-500">Schedule a new visit</p>
+                    </Link>
+                </div>
             </div>
         </div>
     );
@@ -116,11 +120,11 @@ const PatientAppointments: React.FC = () => {
   
   const getStatusChip = (status: Appointment['status']) => {
     switch(status) {
-        case 'Scheduled': return 'bg-yellow-200 text-yellow-800';
-        case 'Completed': return 'bg-green-200 text-green-800';
-        case 'Cancelled': return 'bg-red-200 text-red-800';
-        case 'Pending Triage': return 'bg-blue-200 text-blue-800';
-        default: return 'bg-gray-200 text-gray-800';
+        case 'Scheduled': return 'bg-warning-100 text-warning-800';
+        case 'Completed': return 'bg-success-100 text-success-800';
+        case 'Cancelled': return 'bg-danger-100 text-danger-800';
+        case 'Pending Triage': return 'bg-primary-100 text-primary-800';
+        default: return 'bg-neutral-200 text-neutral-800';
     }
   }
 
@@ -130,30 +134,31 @@ const PatientAppointments: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="animate-fade-in-up">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">My Appointments</h1>
-        <button onClick={() => setShowModal(true)} className="bg-brand-blue text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-brand-blue-dark">
+        <h1 className="text-3xl font-bold text-neutral-800">My Appointments</h1>
+        <button onClick={() => setShowModal(true)} className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-700 font-semibold shadow-soft hover:shadow-lg transition-all active:scale-95">
           {ICONS.add}
           <span>Book New Appointment</span>
         </button>
       </div>
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
         <table className="w-full text-left">
-          <thead>
-            <tr className="border-b">
-              <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Doctor</th>
-              <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Department</th>
-              <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Date & Time</th>
-              <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Status</th>
+          <thead className="bg-neutral-50">
+            <tr className="border-b-2 border-neutral-200">
+              <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Doctor</th>
+              <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Department</th>
+              <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date & Time</th>
+              <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
             </tr>
           </thead>
           <tbody>
-            {appointments.map(app => (
-              <tr key={app.id} className="border-b hover:bg-gray-50">
-                <td className="p-3 text-gray-800 font-medium">{app.doctorName || 'To be assigned'}</td>
-                <td className="p-3 text-gray-600">{app.departmentName}</td>
-                <td className="p-3 text-gray-600">{app.date} at {app.time}</td>
+            {appointments.length === 0 && <tr><td colSpan={4} className="p-4 text-center text-neutral-500">No appointments found.</td></tr>}
+            {appointments.map((app, index) => (
+              <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                <td className="p-3 text-neutral-800 font-medium">{app.doctorName || 'To be assigned'}</td>
+                <td className="p-3 text-neutral-600">{app.departmentName}</td>
+                <td className="p-3 text-neutral-600">{app.date} at {app.time}</td>
                 <td className="p-3">
                   <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusChip(app.status)}`}>
                     {app.status}
@@ -165,7 +170,7 @@ const PatientAppointments: React.FC = () => {
         </table>
       </div>
       {showModal && <AppointmentModal onClose={() => setShowModal(false)} onBooked={handleBooked} />}
-    </>
+    </div>
   );
 };
 
@@ -187,7 +192,6 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
     }, []);
 
     useEffect(() => {
-        // When appointment date changes, default check-in to that date
         setRoomBooking(prev => ({ ...prev, checkIn: date }));
     }, [date]);
 
@@ -238,52 +242,58 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
         }
         setIsLoading(false);
     };
+    
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <div className="bg-white rounded-lg p-8 w-full max-w-lg max-h-full overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">Book Appointment</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg max-h-full flex flex-col animate-fade-in-up">
+                <div className="flex justify-between items-center p-5 border-b border-neutral-200">
+                    <h2 className="text-xl font-bold text-neutral-800">Book Appointment</h2>
+                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                </div>
+                <form id="appointment-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
                     <div>
-                        <h3 className="font-semibold text-gray-700 mb-2">Appointment Details</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <select value={selectedDept} onChange={e => setSelectedDept(e.target.value)} required className="w-full p-2 border rounded md:col-span-3">
+                        <h3 className="font-semibold text-neutral-700 mb-2">Appointment Details</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <select value={selectedDept} onChange={e => setSelectedDept(e.target.value)} required className={`${inputClass} md:col-span-2`}>
                                 <option value="">Select Department</option>
                                 {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                             </select>
-                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="w-full p-2 border rounded" min={new Date().toISOString().split("T")[0]}/>
-                            <input type="time" value={time} onChange={e => setTime(e.target.value)} required className="w-full p-2 border rounded" />
+                            <input type="date" value={date} onChange={e => setDate(e.target.value)} required className={inputClass} min={new Date().toISOString().split("T")[0]}/>
+                            <input type="time" value={time} onChange={e => setTime(e.target.value)} required className={inputClass} />
                         </div>
                     </div>
                     
                     <div className="border-t pt-4">
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" checked={requireRoom} onChange={e => setRequireRoom(e.target.checked)} className="h-4 w-4"/>
-                            <span>Require room booking for this appointment?</span>
+                        <label className="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" checked={requireRoom} onChange={e => setRequireRoom(e.target.checked)} className="h-5 w-5 rounded text-primary-600 focus:ring-primary-500"/>
+                            <span className="font-semibold text-neutral-700">Require room booking for this appointment?</span>
                         </label>
                         {requireRoom && (
-                            <div className="mt-4 space-y-4 border p-4 rounded-md bg-gray-50">
-                                <h3 className="font-semibold text-gray-700">Room Booking Details</h3>
+                            <div className="mt-4 space-y-4 border p-4 rounded-md bg-neutral-50 animate-fade-in">
+                                <h3 className="font-semibold text-neutral-700">Room Booking Details</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                     <select value={roomBooking.type} onChange={e => setRoomBooking({...roomBooking, type: e.target.value})} required className="w-full p-2 border rounded">
+                                     <select value={roomBooking.type} onChange={e => setRoomBooking({...roomBooking, type: e.target.value})} required className={inputClass}>
                                         <option value="">Select Room Type</option>
                                         {rooms.map(r => <option key={r.id} value={r.type}>{r.type} (${r.pricePerNight}/night)</option>)}
                                     </select>
-                                    <input type="date" value={roomBooking.checkIn} onChange={e => setRoomBooking({...roomBooking, checkIn: e.target.value})} required className="w-full p-2 border rounded" min={date || new Date().toISOString().split("T")[0]}/>
-                                    <input type="date" value={roomBooking.checkOut} onChange={e => setRoomBooking({...roomBooking, checkOut: e.target.value})} required className="w-full p-2 border rounded" min={roomBooking.checkIn || new Date().toISOString().split("T")[0]}/>
+                                    <input type="date" value={roomBooking.checkIn} onChange={e => setRoomBooking({...roomBooking, checkIn: e.target.value})} required className={inputClass} min={date || new Date().toISOString().split("T")[0]}/>
+                                    <input type="date" value={roomBooking.checkOut} onChange={e => setRoomBooking({...roomBooking, checkOut: e.target.value})} required className={inputClass} min={roomBooking.checkIn || new Date().toISOString().split("T")[0]}/>
                                 </div>
                                 {totalRoomCost > 0 && (
-                                    <p className="font-semibold text-lg text-right">Room Cost: ${totalRoomCost.toFixed(2)}</p>
+                                    <p className="font-semibold text-lg text-right text-neutral-800">Room Cost: <span className="text-primary-600">${totalRoomCost.toFixed(2)}</span></p>
                                 )}
                             </div>
                         )}
                     </div>
-
-                    <div className="flex justify-end space-x-2 pt-4 border-t">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">{isLoading ? "Requesting..." : "Request Appointment"}</button>
-                    </div>
                 </form>
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold transition-colors">Cancel</button>
+                    <button type="submit" form="appointment-form" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 transition-all active:scale-95">
+                      {isLoading ? "Requesting..." : "Request Appointment"}
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -312,70 +322,70 @@ const PatientHistory: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">My Medical History</h1>
+        <div className="space-y-8 animate-fade-in-up">
+            <h1 className="text-3xl font-bold text-neutral-800 mb-6">My Medical History</h1>
             <div className="space-y-6">
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-2">Test Results</h2>
+                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                    <h2 className="text-xl font-semibold mb-2 p-2">Test Results</h2>
                      <table className="w-full text-left">
-                        <thead><tr className="border-b">
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Test</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Type</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Date</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Status</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Result</th>
+                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Test</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Type</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Result</th>
                         </tr></thead>
                         <tbody>
-                            {tests.map(t => <tr key={t.id} className="border-b hover:bg-gray-50">
-                                <td className="p-2 text-gray-800 font-medium">{t.testName}</td>
-                                <td className="p-2 text-gray-600">{t.type}</td>
-                                <td className="p-2 text-gray-600">{t.requestDate}</td>
-                                <td className="p-2 text-gray-600">{t.status}</td>
-                                <td className="p-2 text-gray-600">
+                            {tests.map((t, index) => <tr key={t.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3 text-neutral-800 font-medium">{t.testName}</td>
+                                <td className="p-3 text-neutral-600">{t.type}</td>
+                                <td className="p-3 text-neutral-600">{t.requestDate}</td>
+                                <td className="p-3 text-neutral-600">{t.status}</td>
+                                <td className="p-3 text-neutral-600">
                                     {t.result || 'N/A'}
                                     {t.imageUrl && (
-                                        <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-brand-blue hover:underline text-sm">[View Image]</a>
+                                        <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary-600 hover:underline text-sm font-semibold">[View Image]</a>
                                     )}
                                 </td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-2">Prescriptions</h2>
+                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                    <h2 className="text-xl font-semibold mb-2 p-2">Prescriptions</h2>
                     <table className="w-full text-left">
-                        <thead><tr className="border-b">
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Date</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Medication</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Dosage</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Doctor</th>
+                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Dosage</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Doctor</th>
                         </tr></thead>
                         <tbody>
-                            {prescriptions.map(p => <tr key={p.id} className="border-b hover:bg-gray-50">
-                                <td className="p-2 text-gray-600">{p.date}</td>
-                                <td className="p-2 text-gray-800 font-medium">{p.medication}</td>
-                                <td className="p-2 text-gray-600">{p.dosage}</td>
-                                <td className="p-2 text-gray-600">{p.doctorName}</td>
+                            {prescriptions.map((p, index) => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3 text-neutral-600">{p.date}</td>
+                                <td className="p-3 text-neutral-800 font-medium">{p.medication}</td>
+                                <td className="p-3 text-neutral-600">{p.dosage}</td>
+                                <td className="p-3 text-neutral-600">{p.doctorName}</td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-2">Discharge Summaries</h2>
+                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                    <h2 className="text-xl font-semibold mb-2 p-2">Discharge Summaries</h2>
                     <table className="w-full text-left">
-                        <thead><tr className="border-b">
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Generated On</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider text-sm">Action</th>
+                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Generated On</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                         </tr></thead>
                         <tbody>
-                            {summaries.map(s => <tr key={s.id} className="border-b hover:bg-gray-50">
-                                <td className="p-2 text-gray-600">{new Date(s.generationDate).toLocaleString()}</td>
-                                <td className="p-2">
-                                    <button onClick={() => downloadSummary(s)} className="text-brand-blue hover:underline">Download Summary</button>
+                            {summaries.map((s, index) => <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3 text-neutral-600">{new Date(s.generationDate).toLocaleString()}</td>
+                                <td className="p-3">
+                                    <button onClick={() => downloadSummary(s)} className="font-semibold text-primary-600 hover:underline">Download Summary</button>
                                 </td>
                             </tr>)}
                             {summaries.length === 0 && (
-                                <tr><td colSpan={2} className="p-2 text-center text-gray-500">No summaries available.</td></tr>
+                                <tr><td colSpan={2} className="p-4 text-center text-neutral-500">No summaries available.</td></tr>
                             )}
                         </tbody>
                     </table>
@@ -390,6 +400,8 @@ const PaymentModal: React.FC<{bill: Bill, onClose: () => void, onPaymentSuccess:
 
     const handlePay = async () => {
         setIsLoading(true);
+        // Simulate payment processing
+        await new Promise(resolve => setTimeout(resolve, 1500));
         try {
             await api.payBill(bill.id);
             alert("Payment Successful!");
@@ -403,28 +415,32 @@ const PaymentModal: React.FC<{bill: Bill, onClose: () => void, onPaymentSuccess:
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <div className="bg-white rounded-lg p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-4">Complete Your Payment</h2>
-                <div className="bg-gray-50 p-4 rounded-md mb-4">
-                    <p><strong>Details:</strong> {bill.details}</p>
-                    <p className="text-2xl font-bold mt-2">Amount: ${bill.amount.toFixed(2)}</p>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+                <div className="p-5 border-b border-neutral-200">
+                    <h2 className="text-xl font-bold text-neutral-800">Complete Your Payment</h2>
                 </div>
-                <div className="space-y-2">
-                    <label className="font-semibold">Select Payment Method:</label>
-                    <div className="flex flex-col space-y-1">
-                        {['Credit Card', 'Debit Card', 'UPI'].map(method => (
-                            <label key={method} className="flex items-center p-2 border rounded-md has-[:checked]:bg-blue-50 has-[:checked]:border-brand-blue">
-                                <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={() => setPaymentMethod(method)} className="mr-2"/>
-                                {method}
-                            </label>
-                        ))}
+                <div className="p-6 space-y-4">
+                    <div className="bg-neutral-50 p-4 rounded-md border">
+                        <p className="text-neutral-600"><strong>Details:</strong> {bill.details}</p>
+                        <p className="text-2xl font-bold mt-2 text-neutral-800">Amount: ${bill.amount.toFixed(2)}</p>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="font-semibold text-neutral-700">Select Payment Method:</label>
+                        <div className="flex flex-col space-y-2">
+                            {['Credit Card', 'Debit Card', 'UPI'].map(method => (
+                                <label key={method} className="flex items-center p-3 border rounded-lg has-[:checked]:bg-primary-50 has-[:checked]:border-primary-500 transition-colors cursor-pointer">
+                                    <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={() => setPaymentMethod(method)} className="mr-3 h-4 w-4 text-primary-600 focus:ring-primary-500"/>
+                                    <span className="font-medium">{method}</span>
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 </div>
-                <div className="flex justify-end space-x-2 mt-6">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
-                    <button onClick={handlePay} disabled={isLoading} className="px-4 py-2 bg-brand-green text-white rounded-lg disabled:bg-gray-400">
-                        {isLoading ? "Processing..." : "Confirm Payment"}
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                    <button onClick={handlePay} disabled={isLoading} className="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-all">
+                        {isLoading ? "Processing..." : `Pay $${bill.amount.toFixed(2)}`}
                     </button>
                 </div>
             </div>
@@ -451,30 +467,30 @@ const PatientBilling: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Billing & Payments</h1>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+        <div className="animate-fade-in-up">
+            <h1 className="text-3xl font-bold text-neutral-800 mb-6">Billing & Payments</h1>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
                 <table className="w-full text-left">
-                    <thead><tr className="border-b">
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Date</th>
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Details</th>
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Amount</th>
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Status</th>
-                        <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Action</th>
+                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Details</th>
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Amount</th>
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                     </tr></thead>
                     <tbody>
-                        {bills.map(b => <tr key={b.id} className="border-b hover:bg-gray-50">
-                            <td className="p-3 text-gray-600">{b.date}</td>
-                            <td className="p-3 text-gray-800 font-medium">{b.details}</td>
-                            <td className="p-3 text-gray-800 font-medium">${b.amount.toFixed(2)}</td>
+                        {bills.map((b, index) => <tr key={b.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            <td className="p-3 text-neutral-600">{b.date}</td>
+                            <td className="p-3 text-neutral-800 font-medium">{b.details}</td>
+                            <td className="p-3 text-neutral-800 font-medium">${b.amount.toFixed(2)}</td>
                             <td className="p-3">
-                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>
                                     {b.status}
                                 </span>
                             </td>
                             <td className="p-3">
                                 {b.status === 'Unpaid' && (
-                                    <button onClick={() => setBillToPay(b)} className="bg-brand-green text-white px-3 py-1 text-xs rounded hover:bg-brand-green-dark">
+                                    <button onClick={() => setBillToPay(b)} className="bg-success-600 text-white px-3 py-1 text-xs rounded-md hover:bg-success-700 font-semibold active:scale-95 transition-transform">
                                         Pay Now
                                     </button>
                                 )}
@@ -565,29 +581,29 @@ const PatientInsurance: React.FC = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Insurance Details</h1>
-            <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="animate-fade-in-up">
+            <h1 className="text-3xl font-bold text-neutral-800 mb-6">Insurance Details</h1>
+            <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
                 {isLoading && <p>Loading details...</p>}
 
                 {!isLoading && details && (
                     <div>
-                        <h2 className="text-xl font-semibold mb-4">Your Insurance Policy</h2>
+                        <h2 className="text-xl font-semibold mb-4 text-neutral-800">Your Insurance Policy</h2>
                         <div className="grid grid-cols-2 gap-4 text-sm mb-6">
-                            <div><strong className="block text-gray-500">Provider</strong>{details.provider}</div>
-                            <div><strong className="block text-gray-500">Policy Number</strong>{details.policyNumber}</div>
-                            <div><strong className="block text-gray-500">Nominee</strong>{details.nominee}</div>
-                            <div><strong className="block text-gray-500">Coverage</strong>${details.coverage.toLocaleString()}</div>
-                            <div><strong className="block text-gray-500">Expires On</strong>{details.expiryDate}</div>
+                            <div><strong className="block text-neutral-500">Provider</strong>{details.provider}</div>
+                            <div><strong className="block text-neutral-500">Policy Number</strong>{details.policyNumber}</div>
+                            <div><strong className="block text-neutral-500">Nominee</strong>{details.nominee}</div>
+                            <div><strong className="block text-neutral-500">Coverage</strong>${details.coverage.toLocaleString()}</div>
+                            <div><strong className="block text-neutral-500">Expires On</strong>{details.expiryDate}</div>
                         </div>
                     </div>
                 )}
 
                 {!isLoading && !details && (
-                     <p className="text-center text-gray-500 mb-4">No insurance details found. Please upload your insurance QR code.</p>
+                     <p className="text-center text-neutral-500 mb-4">No insurance details found. Please upload your insurance QR code.</p>
                 )}
 
-                <div className="text-center border-t pt-6">
+                <div className="text-center border-t border-neutral-200 pt-6">
                      <input
                         type="file"
                         accept="image/*"
@@ -598,7 +614,7 @@ const PatientInsurance: React.FC = () => {
                     />
                     <label
                         htmlFor="qr-upload"
-                        className={`cursor-pointer inline-flex items-center space-x-2 px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-blue-dark transition-colors ${isLoading ? 'bg-gray-400 cursor-not-allowed' : ''}`}
+                        className={`cursor-pointer inline-flex items-center space-x-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold shadow-soft active:scale-95 ${isLoading ? 'bg-neutral-400 cursor-not-allowed' : ''}`}
                     >
                         {ICONS.upload}
                         <span>{details ? 'Update Insurance QR Code' : 'Upload Insurance QR Code'}</span>
@@ -651,53 +667,55 @@ const PatientQueriesAndComplaints: React.FC = () => {
     
     const getStatusChip = (status: PatientQuery['status']) => {
         switch(status) {
-            case 'Submitted': return 'bg-blue-200 text-blue-800';
-            case 'In Review': return 'bg-yellow-200 text-yellow-800';
-            case 'Resolved': return 'bg-green-200 text-green-800';
-            default: return 'bg-gray-200 text-gray-800';
+            case 'Submitted': return 'bg-primary-100 text-primary-800';
+            case 'In Review': return 'bg-warning-100 text-warning-800';
+            case 'Resolved': return 'bg-success-100 text-success-800';
+            default: return 'bg-neutral-200 text-neutral-800';
         }
     };
+    
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Queries & Complaints</h1>
+        <div className="animate-fade-in-up">
+            <h1 className="text-3xl font-bold text-neutral-800 mb-6">Support Queries</h1>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
+                <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
                     <h2 className="text-xl font-semibold mb-4">Submit a New Query</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
-                            <input type="text" id="subject" value={subject} onChange={e => setSubject(e.target.value)} required className="mt-1 w-full p-2 border rounded-md"/>
+                            <label htmlFor="subject" className="block text-sm font-medium text-neutral-700">Subject</label>
+                            <input type="text" id="subject" value={subject} onChange={e => setSubject(e.target.value)} required className={`mt-1 ${inputClass}`}/>
                         </div>
                         <div>
-                            <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
-                            <textarea id="message" value={message} onChange={e => setMessage(e.target.value)} required rows={5} className="mt-1 w-full p-2 border rounded-md"></textarea>
+                            <label htmlFor="message" className="block text-sm font-medium text-neutral-700">Message</label>
+                            <textarea id="message" value={message} onChange={e => setMessage(e.target.value)} required rows={5} className={`mt-1 ${inputClass}`}></textarea>
                         </div>
-                        <button type="submit" disabled={isLoading} className="w-full bg-brand-blue text-white py-2 rounded-lg hover:bg-brand-blue-dark disabled:bg-gray-400">
+                        <button type="submit" disabled={isLoading} className="w-full bg-primary-600 font-semibold text-white py-2.5 rounded-lg hover:bg-primary-700 disabled:bg-neutral-400 transition-all active:scale-95">
                             {isLoading ? "Submitting..." : "Submit"}
                         </button>
                     </form>
                 </div>
-                <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+                <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
                     <h2 className="text-xl font-semibold mb-4">Your Past Queries</h2>
-                    <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                    <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                         {queries.length === 0 ? (
-                            <p className="text-gray-500">You haven't submitted any queries yet.</p>
+                            <p className="text-neutral-500">You haven't submitted any queries yet.</p>
                         ) : (
-                            queries.slice().reverse().map(q => (
-                                <div key={q.id} className="border p-4 rounded-md">
+                            queries.slice().reverse().map((q, index) => (
+                                <div key={q.id} className="border border-neutral-200 p-4 rounded-md animate-fade-in-up" style={{ animationDelay: `${index * 75}ms` }}>
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <p className="font-bold">{q.subject}</p>
-                                            <p className="text-xs text-gray-500">Submitted on: {q.submissionDate}</p>
+                                            <p className="font-bold text-neutral-800">{q.subject}</p>
+                                            <p className="text-xs text-neutral-500">Submitted on: {q.submissionDate}</p>
                                         </div>
                                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusChip(q.status)}`}>{q.status}</span>
                                     </div>
-                                    <p className="text-sm mt-2 text-gray-700 whitespace-pre-wrap">{q.message}</p>
+                                    <p className="text-sm mt-2 text-neutral-700 whitespace-pre-wrap">{q.message}</p>
                                     {q.response && (
-                                        <div className="mt-3 pt-3 border-t bg-gray-50 p-3 rounded-md">
-                                            <p className="font-semibold text-sm">Hospital Response:</p>
-                                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{q.response}</p>
+                                        <div className="mt-3 pt-3 border-t border-neutral-200 bg-neutral-50 p-3 rounded-md">
+                                            <p className="font-semibold text-sm text-neutral-800">Hospital Response:</p>
+                                            <p className="text-sm text-neutral-600 whitespace-pre-wrap">{q.response}</p>
                                         </div>
                                     )}
                                 </div>

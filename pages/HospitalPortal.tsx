@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import { ICONS } from '../constants';
 import { useAuth } from '../context/AuthContext';
-// FIX: Imported the Bill type to be used in the FinanceDashboard component.
 import { UserRole, Appointment, TestRequest, TestType, User, Prescription, Department, Doctor, TriageInfo, DischargeSummary, ICUBed, AttendanceRecord, Bill, MedicationStock, PatientQuery } from '../types';
 import * as api from '../services/api';
 import Card from '../components/Card';
@@ -71,11 +70,11 @@ const AdministrationPortal: React.FC = () => {
     }
     
     return (
-        <div className="flex bg-brand-gray-light min-h-screen">
+        <div className="flex bg-neutral-100 min-h-screen">
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-6 flex-1">
+                <main className="p-8 flex-1 animate-fade-in">
                     <Routes>
                         {user?.role === UserRole.ADMIN && (
                             <>
@@ -122,11 +121,11 @@ const AidingPortal: React.FC = () => {
     }
 
     return (
-        <div className="flex bg-brand-gray-light min-h-screen">
+        <div className="flex bg-neutral-100 min-h-screen">
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-6 flex-1">
+                <main className="p-8 flex-1 animate-fade-in">
                      <Routes>
                          {user?.role === UserRole.LAB_TECHNICIAN && <Route index element={<LabDashboard />} />}
                          {user?.role === UserRole.RADIOLOGIST && <Route index element={<RadiologyDashboard />} />}
@@ -163,11 +162,11 @@ const MedicalPortal: React.FC = () => {
     }
 
     return (
-        <div className="flex bg-brand-gray-light min-h-screen">
+        <div className="flex bg-neutral-100 min-h-screen">
             <Sidebar navItems={navItems} />
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="p-6 flex-1">
+                <main className="p-8 flex-1 animate-fade-in">
                     <Routes>
                         {user?.role === UserRole.DOCTOR && (
                             <>
@@ -221,11 +220,11 @@ const AdminDashboard: React.FC = () => {
             <html>
                 <head><title>Discharge Summary: ${patient?.name}</title>
                 <style>
-                    body { font-family: sans-serif; margin: 2em; }
-                    h1, h2, h3 { color: #1E3A8A; }
+                    body { font-family: Inter, sans-serif; margin: 2em; color: #334155 }
+                    h1, h2, h3 { color: #0F172A; }
                     table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
-                    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-                    th { background-color: #E8F0FE; }
+                    th, td { border: 1px solid #E2E8F0; padding: 8px; text-align: left; }
+                    th { background-color: #F1F5F9; }
                     .section { margin-bottom: 2em; }
                 </style>
                 </head>
@@ -312,62 +311,62 @@ const AdminDashboard: React.FC = () => {
 
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card title="Total Appointments" value={stats.totalAppointments} icon={ICONS.appointment} color="bg-blue-100 text-blue-600" />
-                <Card title="Total Lab/Radiology Tests" value={stats.totalTests} icon={ICONS.lab} color="bg-yellow-100 text-yellow-600" />
-                <Card title="Paid Bills" value={stats.completedBills} icon={ICONS.billing} color="bg-green-100 text-green-600" />
+            <h1 className="text-3xl font-bold text-neutral-800">Admin Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="animate-fade-in-up"><Card title="Total Appointments" value={stats.totalAppointments} icon={ICONS.appointment} color="bg-primary-100 text-primary-600" /></div>
+                <div className="animate-fade-in-up" style={{ animationDelay: '100ms'}}><Card title="Total Lab/Radiology Tests" value={stats.totalTests} icon={ICONS.lab} color="bg-secondary-100 text-secondary-600" /></div>
+                <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}><Card title="Paid Bills" value={stats.completedBills} icon={ICONS.billing} color="bg-success-100 text-success-600" /></div>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-md mt-8">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Patient Queries & Complaints</h2>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <h2 className="text-xl font-semibold mb-4 text-neutral-800 p-2">Patient Queries & Complaints</h2>
                 <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                         <thead><tr className="border-b"><th className="p-3">Date</th><th className="p-3">Patient</th><th className="p-3">Subject</th><th className="p-3">Status</th><th className="p-3">Action</th></tr></thead>
+                         <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Subject</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th></tr></thead>
                         <tbody>
-                            {queries.slice().reverse().map(q => <tr key={q.id} className="border-b">
+                            {queries.slice().reverse().map((q, index) => <tr key={q.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                                 <td className="p-3">{q.submissionDate}</td>
                                 <td className="p-3">{q.patientName}</td>
                                 <td className="p-3">{q.subject}</td>
                                 <td className="p-3">{q.status}</td>
-                                <td className="p-3"><button disabled={q.status === 'Resolved'} onClick={() => setSelectedQuery(q)} className="text-brand-blue hover:underline disabled:text-gray-400 disabled:no-underline">Respond</button></td>
+                                <td className="p-3"><button disabled={q.status === 'Resolved'} onClick={() => setSelectedQuery(q)} className="font-semibold text-primary-600 hover:underline disabled:text-neutral-400 disabled:no-underline">Respond</button></td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-md mt-8">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Discharge Summary Management</h2>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <h2 className="text-xl font-semibold mb-4 text-neutral-800 p-2">Discharge Summary Management</h2>
                 <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                        <thead>
-                            <tr className="border-b">
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Patient</th>
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Generated On</th>
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Status</th>
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm">Actions</th>
+                        <thead className="bg-neutral-50">
+                            <tr className="border-b-2 border-neutral-200">
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Generated On</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {summaries.length === 0 && <tr><td colSpan={4} className="p-3 text-center text-gray-500">No summaries generated yet.</td></tr>}
-                            {summaries.map(s => (
-                                <tr key={s.id} className="border-b hover:bg-gray-50">
+                            {summaries.length === 0 && <tr><td colSpan={4} className="p-3 text-center text-neutral-500">No summaries generated yet.</td></tr>}
+                            {summaries.map((s, index) => (
+                                <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                                     <td className="p-3">{s.patientName}</td>
                                     <td className="p-3">{new Date(s.generationDate).toLocaleString()}</td>
                                     <td className="p-3">
-                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${s.status === 'Approved' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'}`}>
+                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${s.status === 'Approved' ? 'bg-success-100 text-success-800' : 'bg-warning-100 text-warning-800'}`}>
                                             {s.status}
                                         </span>
                                     </td>
                                     <td className="p-3 space-x-2">
                                         {s.status === 'Pending Approval' && (
-                                            <button onClick={() => handleApprove(s.id)} className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200">Approve</button>
+                                            <button onClick={() => handleApprove(s.id)} className="text-sm bg-success-100 text-success-800 font-semibold px-3 py-1 rounded-md hover:bg-success-200">Approve</button>
                                         )}
-                                        <button onClick={() => handleDownload(s, 'json')} className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200">JSON</button>
-                                        <button onClick={() => handleDownload(s, 'pdf')} className="text-sm bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200">PDF</button>
+                                        <button onClick={() => handleDownload(s, 'json')} className="text-sm bg-primary-100 text-primary-800 font-semibold px-3 py-1 rounded-md hover:bg-primary-200">JSON</button>
+                                        <button onClick={() => handleDownload(s, 'pdf')} className="text-sm bg-red-100 text-danger-800 font-semibold px-3 py-1 rounded-md hover:bg-red-200">PDF</button>
                                     </td>
                                 </tr>
                             ))}
@@ -376,15 +375,15 @@ const AdminDashboard: React.FC = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-md mt-8">
-                 <h2 className="text-xl font-semibold mb-4 text-gray-800">Generate Patient Summaries</h2>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                 <h2 className="text-xl font-semibold mb-4 text-neutral-800 p-2">Generate Patient Summaries</h2>
                 <table className="w-full text-left">
-                    <thead><tr className="border-b"><th className="p-3">Patient ID</th><th className="p-3">Name</th><th className="p-3">ABHA ID</th><th className="p-3">Actions</th></tr></thead>
+                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient ID</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">ABHA ID</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Actions</th></tr></thead>
                     <tbody>
-                        {patients.map(p => <tr key={p.id} className="border-b hover:bg-gray-50">
+                        {patients.map((p, index) => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                             <td className="p-3">{p.id}</td><td className="p-3">{p.name}</td><td className="p-3">{p.abhaId}</td>
                             <td className="p-3 space-x-2">
-                                <button onClick={() => handleGenerateSummary(p.id)} disabled={generatingPatientId === p.id} className="text-sm bg-brand-blue text-white px-3 py-1 rounded hover:bg-brand-blue-dark disabled:bg-gray-400">
+                                <button onClick={() => handleGenerateSummary(p.id)} disabled={generatingPatientId === p.id} className="text-sm bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 disabled:bg-neutral-400 font-semibold transition-all active:scale-95">
                                     {generatingPatientId === p.id ? 'Generating...' : 'Generate Summary'}
                                 </button>
                             </td>
@@ -418,22 +417,29 @@ const QueryResponseModal: React.FC<{query: PatientQuery, onClose: () => void, on
     };
     
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 w-full max-w-lg">
-                <h2 className="text-2xl font-bold mb-4">Respond to Query</h2>
-                <div className="bg-gray-50 p-4 rounded-md mb-4 space-y-2">
-                    <p><strong>Patient:</strong> {query.patientName}</p>
-                    <p><strong>Subject:</strong> {query.subject}</p>
-                    <p className="whitespace-pre-wrap"><strong>Message:</strong> {query.message}</p>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg max-h-full flex flex-col animate-fade-in-up">
+                <div className="flex justify-between items-center p-5 border-b border-neutral-200">
+                    <h2 className="text-xl font-bold text-neutral-800">Respond to Query</h2>
+                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
                 </div>
-                <textarea value={response} onChange={e => setResponse(e.target.value)} required rows={5} className="w-full p-2 border rounded-md" placeholder="Type your response here..."></textarea>
-                <div className="flex justify-end space-x-2 mt-4">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                    <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">
-                        {isLoading ? "Submitting..." : "Submit Response"}
-                    </button>
-                </div>
-            </form>
+                <form onSubmit={handleSubmit} className="flex-grow flex flex-col">
+                    <div className="p-6 space-y-4 overflow-y-auto">
+                        <div className="bg-neutral-50 p-4 rounded-md border border-neutral-200 space-y-2">
+                            <p><strong>Patient:</strong> {query.patientName}</p>
+                            <p><strong>Subject:</strong> {query.subject}</p>
+                            <p className="whitespace-pre-wrap"><strong>Message:</strong> {query.message}</p>
+                        </div>
+                        <textarea value={response} onChange={e => setResponse(e.target.value)} required rows={5} className="w-full p-2 border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500/50" placeholder="Type your response here..."></textarea>
+                    </div>
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                            {isLoading ? "Submitting..." : "Submit Response"}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }
@@ -484,44 +490,44 @@ const ManageStaff: React.FC = () => {
 
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Manage Staff</h1>
-                 <button onClick={() => setShowModal(true)} className="bg-brand-blue text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-brand-blue-dark">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold text-neutral-800">Manage Staff</h1>
+                 <button onClick={() => setShowModal(true)} className="bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary-700 font-semibold shadow-soft hover:shadow-lg transition-all active:scale-95">
                     {ICONS.add}
                     <span>Add New Staff</span>
                 </button>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
                 <table className="w-full text-left">
-                    <thead>
-                        <tr className="border-b">
-                            <th className="p-3">Staff ID</th>
-                            <th className="p-3">Name</th>
-                            <th className="p-3">Role</th>
-                            <th className="p-3">Department</th>
-                            <th className="p-3">Status</th>
-                            <th className="p-3">Clock In</th>
-                            <th className="p-3">Clock Out</th>
-                            <th className="p-3">Action</th>
+                    <thead className="bg-neutral-50">
+                        <tr className="border-b-2 border-neutral-200">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Staff ID</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Name</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Role</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Department</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Clock In</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Clock Out</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {staff.map(s => {
+                        {staff.map((s, index) => {
                             const record = attendance.find(a => a.staffId === s.id);
-                            let status = <span className="text-gray-500">Absent</span>;
+                            let status = <span className="text-neutral-500">Absent</span>;
                             if (record) {
                                 if (record.outTime) {
-                                    status = <span className="text-green-600">Off Duty</span>;
+                                    status = <span className="text-success-700">Off Duty</span>;
                                 } else if (record.inTime) {
-                                    status = <span className="text-blue-600">On Duty</span>;
+                                    status = <span className="text-primary-700">On Duty</span>;
                                 }
                             }
                             const isUpdating = updatingStaffId === s.id;
 
                             return (
-                                <tr key={s.id} className="border-b hover:bg-gray-50">
+                                <tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                                     <td className="p-3">{s.id}</td>
                                     <td className="p-3">{s.name}</td>
                                     <td className="p-3">{s.role}</td>
@@ -534,7 +540,7 @@ const ManageStaff: React.FC = () => {
                                             <button 
                                                 onClick={() => handleClockIn(s.id)} 
                                                 disabled={isUpdating}
-                                                className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 disabled:bg-gray-400"
+                                                className="text-sm bg-success-600 text-white px-3 py-1 rounded-md hover:bg-success-700 disabled:bg-neutral-400 font-semibold active:scale-95 transition-transform"
                                             >
                                                 {isUpdating ? '...' : 'Clock In'}
                                             </button>
@@ -543,13 +549,13 @@ const ManageStaff: React.FC = () => {
                                             <button 
                                                 onClick={() => handleClockOut(s.id)} 
                                                 disabled={isUpdating}
-                                                className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 disabled:bg-gray-400"
+                                                className="text-sm bg-danger-100 text-danger-700 font-semibold px-3 py-1 rounded-md hover:bg-danger-600 hover:text-white disabled:bg-neutral-400 active:scale-95 transition-all"
                                             >
                                                 {isUpdating ? '...' : 'Clock Out'}
                                             </button>
                                         )}
                                         {record?.inTime && record.outTime && (
-                                            <span className="text-sm text-gray-500">Done</span>
+                                            <span className="text-sm text-neutral-500">Done</span>
                                         )}
                                     </td>
                                 </tr>
@@ -593,27 +599,35 @@ const AddStaffModal: React.FC<{onClose: () => void; onAdded: () => void}> = ({on
 
     const staffRoles = Object.values(UserRole).filter(r => r !== UserRole.PATIENT);
     const showDepartment = role === UserRole.DOCTOR || role === UserRole.NURSE;
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
 
     return (
-         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-            <div className="bg-white rounded-lg p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-4">Add New Staff Member</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required className="w-full p-2 border rounded"/>
-                    <select value={role} onChange={e => setRole(e.target.value as UserRole)} required className="w-full p-2 border rounded">
-                        <option value="">Select Role</option>
-                        {staffRoles.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
-                    {showDepartment && (
-                        <select value={department} onChange={e => setDepartment(e.target.value)} required className="w-full p-2 border rounded">
-                            <option value="">Select Department</option>
-                            {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+                 <div className="flex justify-between items-center p-5 border-b border-neutral-200">
+                    <h2 className="text-xl font-bold text-neutral-800">Add New Staff Member</h2>
+                    <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="p-6 space-y-4">
+                        <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required className={inputClass}/>
+                        <select value={role} onChange={e => setRole(e.target.value as UserRole)} required className={inputClass}>
+                            <option value="">Select Role</option>
+                            {staffRoles.map(r => <option key={r} value={r}>{r}</option>)}
                         </select>
-                    )}
-                    <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full p-2 border rounded"/>
-                    <div className="flex justify-end space-x-2">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">{isLoading ? "Adding..." : "Add Staff"}</button>
+                        {showDepartment && (
+                            <select value={department} onChange={e => setDepartment(e.target.value)} required className={inputClass}>
+                                <option value="">Select Department</option>
+                                {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+                            </select>
+                        )}
+                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className={inputClass}/>
+                    </div>
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                            {isLoading ? "Adding..." : "Add Staff"}
+                        </button>
                     </div>
                 </form>
             </div>
@@ -634,28 +648,28 @@ const DoctorDashboard: React.FC = () => {
     const todaysAppointments = appointments.filter(a => a.date === new Date().toISOString().split('T')[0]);
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Doctor's Dashboard</h1>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Today's Appointments ({todaysAppointments.length})</h2>
+            <h1 className="text-3xl font-bold text-neutral-800">Doctor's Dashboard</h1>
+            <div className="bg-white p-6 rounded-xl shadow-soft border border-neutral-200">
+                <h2 className="text-xl font-semibold mb-4 text-neutral-800">Today's Appointments ({todaysAppointments.length})</h2>
                  <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
                         <thead className="sticky top-0 bg-white">
-                            <tr className="border-b">
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm" style={{color: 'black'}}>Patient</th>
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm" style={{color: 'black'}}>Time</th>
-                                <th className="p-3 font-semibold text-gray-500 uppercase tracking-wider text-sm" style={{color: 'black'}}>Status</th>
+                            <tr className="border-b-2 border-neutral-200">
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Time</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {todaysAppointments.length > 0 ? todaysAppointments.map(a => 
-                            <tr key={a.id} className="border-b hover:bg-gray-50">
-                                <td className="p-3 text-black">{a.patientName}</td>
-                                <td className="p-3 text-black">{a.time}</td>
-                                <td className="p-3"> <span className={`px-2 py-1 text-xs font-semibold rounded-full ${a.status === 'Scheduled' ? 'bg-yellow-200 text-yellow-800' : a.status === 'Completed' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>{a.status}</span></td>
+                            {todaysAppointments.length > 0 ? todaysAppointments.map((a, index) => 
+                            <tr key={a.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3 text-neutral-800">{a.patientName}</td>
+                                <td className="p-3 text-neutral-800">{a.time}</td>
+                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${a.status === 'Scheduled' ? 'bg-warning-100 text-warning-800' : a.status === 'Completed' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>{a.status}</span></td>
                             </tr>) : 
-                            <tr><td colSpan={3} className="p-3 text-center text-gray-500">No appointments scheduled for today.</td></tr>
+                            <tr><td colSpan={3} className="p-4 text-center text-neutral-500">No appointments scheduled for today.</td></tr>
                             }
                         </tbody>
                     </table>
@@ -679,28 +693,28 @@ const DoctorAppointments: React.FC = () => {
     }, [fetchAppointments]);
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">All Appointments</h1>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold text-neutral-800">All Appointments</h1>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
                 <table className="w-full text-left">
-                     <thead>
-                        <tr className="border-b">
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Patient</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Date</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Time</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Status</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Action</th>
+                     <thead className="bg-neutral-50">
+                        <tr className="border-b-2 border-neutral-200">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Time</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Status</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                         </tr>
                     </thead>
                      <tbody>
-                        {appointments.map(app => (
-                            <tr key={app.id} className="border-b hover:bg-gray-50">
-                                <td className="p-3 text-black">{app.patientName}</td>
-                                <td className="p-3 text-black">{app.date}</td>
-                                <td className="p-3 text-black">{app.time}</td>
-                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${app.status === 'Scheduled' ? 'bg-yellow-200 text-yellow-800' : app.status === 'Completed' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>{app.status}</span></td>
-                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="text-brand-blue hover:underline">View Record</button></td>
+                        {appointments.map((app, index) => (
+                            <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3 text-neutral-800">{app.patientName}</td>
+                                <td className="p-3 text-neutral-800">{app.date}</td>
+                                <td className="p-3 text-neutral-800">{app.time}</td>
+                                <td className="p-3"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${app.status === 'Scheduled' ? 'bg-warning-100 text-warning-800' : app.status === 'Completed' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>{app.status}</span></td>
+                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="font-semibold text-primary-600 hover:underline">View Record</button></td>
                             </tr>
                         ))}
                      </tbody>
@@ -719,28 +733,28 @@ interface MedicalHistory {
 }
 
 const TriageInfoDisplay: React.FC<{triageData: TriageInfo}> = ({ triageData }) => (
-    <div className="border-2 border-blue-200 bg-blue-50 p-4 rounded-lg">
-        <h3 className="font-bold text-lg mb-2 text-blue-800">Triage Information (from Nurse)</h3>
+    <div className="border-2 border-primary-200 bg-primary-50 p-4 rounded-lg">
+        <h3 className="font-bold text-lg mb-2 text-primary-700">Triage Information (from Nurse)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-                <h4 className="font-semibold text-black">Vitals</h4>
-                <p className="text-black"><strong>BP:</strong> {triageData.vitals.bloodPressure}</p>
-                <p className="text-black"><strong>Temp:</strong> {triageData.vitals.temperature}</p>
-                <p className="text-black"><strong>Heart Rate:</strong> {triageData.vitals.heartRate}</p>
-                <p className="text-black"><strong>Resp. Rate:</strong> {triageData.vitals.respiratoryRate}</p>
+                <h4 className="font-semibold text-neutral-800">Vitals</h4>
+                <p className="text-neutral-700"><strong>BP:</strong> {triageData.vitals.bloodPressure}</p>
+                <p className="text-neutral-700"><strong>Temp:</strong> {triageData.vitals.temperature}</p>
+                <p className="text-neutral-700"><strong>Heart Rate:</strong> {triageData.vitals.heartRate}</p>
+                <p className="text-neutral-700"><strong>Resp. Rate:</strong> {triageData.vitals.respiratoryRate}</p>
             </div>
             <div>
-                <h4 className="font-semibold text-black">Allergies</h4>
-                <p className="text-black"><strong>Food:</strong> {triageData.allergies.food || 'None reported'}</p>
-                <p className="text-black"><strong>Medication:</strong> {triageData.allergies.medication || 'None reported'}</p>
+                <h4 className="font-semibold text-neutral-800">Allergies</h4>
+                <p className="text-neutral-700"><strong>Food:</strong> {triageData.allergies.food || 'None reported'}</p>
+                <p className="text-neutral-700"><strong>Medication:</strong> {triageData.allergies.medication || 'None reported'}</p>
             </div>
             <div className="md:col-span-2">
-                 <h4 className="font-semibold text-black">Current Medications</h4>
-                 <p className="text-black">{triageData.currentMedications || 'None reported'}</p>
+                 <h4 className="font-semibold text-neutral-800">Current Medications</h4>
+                 <p className="text-neutral-700">{triageData.currentMedications || 'None reported'}</p>
             </div>
              <div className="md:col-span-2">
-                 <h4 className="font-semibold text-black">Triage Notes</h4>
-                 <p className="whitespace-pre-wrap text-black">{triageData.triageNotes || 'N/A'}</p>
+                 <h4 className="font-semibold text-neutral-800">Triage Notes</h4>
+                 <p className="whitespace-pre-wrap text-neutral-700">{triageData.triageNotes || 'N/A'}</p>
             </div>
         </div>
     </div>
@@ -828,76 +842,78 @@ const PatientRecordModal: React.FC<{appointment: Appointment; onClose: () => voi
 
 
     return (
-         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-full overflow-y-auto">
-                <div className="flex justify-between items-start mb-4">
+         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-4xl max-h-full flex flex-col animate-fade-in-up">
+                 <div className="flex justify-between items-start p-5 border-b border-neutral-200">
                     <div>
-                        <h2 className="text-2xl font-bold text-black">Patient Record: {history?.patientInfo?.name}</h2>
-                        <p className="text-black">ABHA ID: {history?.patientInfo?.abhaId}</p>
-                        <p className="text-black">Current Appointment: {appointment.date} at {appointment.time}</p>
+                        <h2 className="text-2xl font-bold text-neutral-800">Patient Record: {history?.patientInfo?.name}</h2>
+                        <p className="text-neutral-500">ABHA ID: {history?.patientInfo?.abhaId}</p>
+                        <p className="text-neutral-500">Current Appointment: {appointment.date} at {appointment.time}</p>
                     </div>
-                     <button type="button" onClick={onClose} className="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+                     <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
                 </div>
                
+                <div className="p-6 space-y-6 overflow-y-auto">
                 {history ? (
                     <div className="space-y-6">
                         {appointment.triageData && <TriageInfoDisplay triageData={appointment.triageData} />}
                         
                         <div className="border p-4 rounded-lg">
-                            <h3 className="font-bold text-lg mb-2 text-black">Current Appointment Notes</h3>
-                            <p className="text-sm text-black whitespace-pre-wrap mb-2">{appointment.notes || "No notes for this appointment yet."}</p>
-                            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className="w-full p-2 border rounded" placeholder="Add new notes..."></textarea>
+                            <h3 className="font-bold text-lg mb-2 text-neutral-800">Current Appointment Notes</h3>
+                            <p className="text-sm text-neutral-600 whitespace-pre-wrap mb-2">{appointment.notes || "No notes for this appointment yet."}</p>
+                            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className="w-full p-2 border border-neutral-300 rounded focus:ring-primary-500/50 focus:border-primary-500" placeholder="Add new notes..."></textarea>
                         </div>
                         
                         <div className="border p-4 rounded-lg space-y-4">
-                            <h3 className="font-bold text-lg text-black">Orders</h3>
+                            <h3 className="font-bold text-lg text-neutral-800">Orders</h3>
                              <div>
-                                <label className="font-semibold text-black block mb-1">Order Lab Tests</label>
+                                <label className="font-semibold text-neutral-700 block mb-1">Order Lab Tests</label>
                                 <div className="flex space-x-2">
-                                    <input type="text" value={labTestOrder} onChange={e => setLabTestOrder(e.target.value)} className="flex-1 p-2 border rounded" placeholder="e.g., CBC, Lipid Panel..."/>
-                                    <button onClick={() => handleOrderTests(TestType.LAB)} disabled={isOrderingTests || !labTestOrder.trim()} className="px-4 py-2 bg-yellow-500 text-white rounded disabled:bg-gray-400">Order Lab</button>
+                                    <input type="text" value={labTestOrder} onChange={e => setLabTestOrder(e.target.value)} className="flex-1 p-2 border rounded border-neutral-300" placeholder="e.g., CBC, Lipid Panel..."/>
+                                    <button onClick={() => handleOrderTests(TestType.LAB)} disabled={isOrderingTests || !labTestOrder.trim()} className="px-4 py-2 bg-secondary-500 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Order Lab</button>
                                 </div>
                             </div>
                              <div>
-                                <label className="font-semibold text-black block mb-1">Order Radiology/Scans</label>
+                                <label className="font-semibold text-neutral-700 block mb-1">Order Radiology/Scans</label>
                                 <div className="flex space-x-2">
-                                    <input type="text" value={radioTestOrder} onChange={e => setRadioTestOrder(e.target.value)} className="flex-1 p-2 border rounded" placeholder="e.g., Chest X-Ray, MRI Brain..."/>
-                                    <button onClick={() => handleOrderTests(TestType.RADIOLOGY)} disabled={isOrderingTests || !radioTestOrder.trim()} className="px-4 py-2 bg-yellow-500 text-white rounded disabled:bg-gray-400">Order Scan</button>
+                                    <input type="text" value={radioTestOrder} onChange={e => setRadioTestOrder(e.target.value)} className="flex-1 p-2 border rounded border-neutral-300" placeholder="e.g., Chest X-Ray, MRI Brain..."/>
+                                    <button onClick={() => handleOrderTests(TestType.RADIOLOGY)} disabled={isOrderingTests || !radioTestOrder.trim()} className="px-4 py-2 bg-secondary-500 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Order Scan</button>
                                 </div>
                             </div>
                             <div>
-                                <label className="font-semibold text-black block mb-1">Add Prescription</label>
+                                <label className="font-semibold text-neutral-700 block mb-1">Add Prescription</label>
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                                    <input type="text" value={newPrescription.medication} onChange={e => setNewPrescription({...newPrescription, medication: e.target.value})} className="p-2 border rounded" placeholder="Medication"/>
-                                    <input type="number" value={newPrescription.quantity} onChange={e => setNewPrescription({...newPrescription, quantity: e.target.value})} className="p-2 border rounded" placeholder="Quantity"/>
-                                    <input type="text" value={newPrescription.dosage} onChange={e => setNewPrescription({...newPrescription, dosage: e.target.value})} className="p-2 border rounded" placeholder="Dosage"/>
-                                    <input type="text" value={newPrescription.instructions} onChange={e => setNewPrescription({...newPrescription, instructions: e.target.value})} className="p-2 border rounded" placeholder="Instructions"/>
+                                    <input type="text" value={newPrescription.medication} onChange={e => setNewPrescription({...newPrescription, medication: e.target.value})} className="p-2 border rounded border-neutral-300" placeholder="Medication"/>
+                                    <input type="number" value={newPrescription.quantity} onChange={e => setNewPrescription({...newPrescription, quantity: e.target.value})} className="p-2 border rounded border-neutral-300" placeholder="Quantity"/>
+                                    <input type="text" value={newPrescription.dosage} onChange={e => setNewPrescription({...newPrescription, dosage: e.target.value})} className="p-2 border rounded border-neutral-300" placeholder="Dosage"/>
+                                    <input type="text" value={newPrescription.instructions} onChange={e => setNewPrescription({...newPrescription, instructions: e.target.value})} className="p-2 border rounded border-neutral-300" placeholder="Instructions"/>
                                 </div>
-                                <button onClick={handleAddPrescription} disabled={isPrescribing || !newPrescription.medication.trim()} className="px-4 py-2 mt-2 bg-green-600 text-white rounded disabled:bg-gray-400">Add Prescription</button>
+                                <button onClick={handleAddPrescription} disabled={isPrescribing || !newPrescription.medication.trim()} className="px-4 py-2 mt-2 bg-accent-500 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Add Prescription</button>
                             </div>
                         </div>
 
                         <div className="border p-4 rounded-lg">
-                            <h3 className="font-bold text-lg mb-2 text-black">Medical History</h3>
-                             <div className="space-y-2 max-h-64 overflow-y-auto">
-                                <h4 className="font-semibold text-md mt-2 text-black">Past Appointments</h4>
-                                {history.appointments.map(a => <div key={a.id} className="text-sm p-2 bg-gray-50 rounded text-black"><strong>{a.date}:</strong> {a.doctorName} ({a.status}) - Notes: {a.notes || 'N/A'}</div>)}
-                                <h4 className="font-semibold text-md mt-2 text-black">Test Results</h4>
-                                {history.tests.map(t => <div key={t.id} className="text-sm p-2 bg-gray-50 rounded text-black">
+                            <h3 className="font-bold text-lg mb-2 text-neutral-800">Medical History</h3>
+                             <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                                <h4 className="font-semibold text-md mt-2 text-neutral-800">Past Appointments</h4>
+                                {history.appointments.map(a => <div key={a.id} className="text-sm p-2 bg-neutral-100 rounded text-neutral-700"><strong>{a.date}:</strong> {a.doctorName} ({a.status}) - Notes: {a.notes || 'N/A'}</div>)}
+                                <h4 className="font-semibold text-md mt-2 text-neutral-800">Test Results</h4>
+                                {history.tests.map(t => <div key={t.id} className="text-sm p-2 bg-neutral-100 rounded text-neutral-700">
                                     <strong>{t.requestDate}:</strong> {t.testName} ({t.status}) - Result: {t.result || 'N/A'}
-                                    {t.imageUrl && <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-brand-blue hover:underline">[View Image]</a>}
+                                    {t.imageUrl && <a href={t.imageUrl} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary-600 hover:underline font-semibold">[View Image]</a>}
                                     </div>)}
-                                <h4 className="font-semibold text-md mt-2 text-black">Prescriptions</h4>
-                                {history.prescriptions.map(p => <div key={p.id} className="text-sm p-2 bg-gray-50 rounded text-black"><strong>{p.date}:</strong> {p.medication} (x{p.quantity}) ({p.dosage}) - Dr. {p.doctorName}</div>)}
+                                <h4 className="font-semibold text-md mt-2 text-neutral-800">Prescriptions</h4>
+                                {history.prescriptions.map(p => <div key={p.id} className="text-sm p-2 bg-neutral-100 rounded text-neutral-700"><strong>{p.date}:</strong> {p.medication} (x{p.quantity}) ({p.dosage}) - Dr. {p.doctorName}</div>)}
                             </div>
                         </div>
                     </div>
                 ) : <p>Loading medical history...</p>}
+                </div>
 
-                <div className="flex justify-end space-x-2 mt-6 pt-4 border-t">
-                    <button onClick={() => handleUpdate()} disabled={isUpdating || !notes} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">Save Notes</button>
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <button onClick={() => handleUpdate()} disabled={isUpdating || !notes} className="px-4 py-2 bg-primary-600 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Save Notes</button>
                     {appointment.status === 'Scheduled' && (
-                         <button onClick={() => handleUpdate('Completed')} disabled={isUpdating} className="px-4 py-2 bg-brand-green text-white rounded disabled:bg-gray-400">Mark as Completed</button>
+                         <button onClick={() => handleUpdate('Completed')} disabled={isUpdating} className="px-4 py-2 bg-success-600 text-white rounded-lg font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">Mark as Completed</button>
                     )}
                 </div>
             </div>
@@ -915,11 +931,11 @@ const NurseDashboard: React.FC = () => {
     }, []);
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Nurse Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card title="Patients Awaiting Triage" value={triageCount} icon={ICONS.tasks} color="bg-blue-100 text-blue-600" />
+            <h1 className="text-3xl font-bold text-neutral-800">Nurse Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card title="Patients Awaiting Triage" value={triageCount} icon={ICONS.tasks} color="bg-primary-100 text-primary-600" />
             </div>
         </div>
     );
@@ -938,28 +954,28 @@ const NurseTriageQueue: React.FC = () => {
     }, [fetchQueue]);
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Triage Queue</h1>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold text-neutral-800">Triage Queue</h1>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
                 <table className="w-full text-left">
-                    <thead>
-                        <tr className="border-b">
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Patient</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Department</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Requested Time</th>
-                            <th className="p-3 font-semibold uppercase tracking-wider text-sm" style={{color: 'black'}}>Action</th>
+                    <thead className="bg-neutral-50">
+                        <tr className="border-b-2 border-neutral-200">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Department</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Requested Time</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {queue.length > 0 ? queue.map(app => (
-                            <tr key={app.id} className="border-b hover:bg-gray-50">
-                                <td className="p-3 text-black font-medium">{app.patientName}</td>
-                                <td className="p-3 text-black">{app.departmentName}</td>
-                                <td className="p-3 text-black">{app.date} at {app.time}</td>
-                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="bg-brand-blue text-white px-3 py-1 rounded hover:bg-brand-blue-dark">Start Triage</button></td>
+                        {queue.length > 0 ? queue.map((app, index) => (
+                            <tr key={app.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3 text-neutral-800 font-medium">{app.patientName}</td>
+                                <td className="p-3 text-neutral-800">{app.departmentName}</td>
+                                <td className="p-3 text-neutral-800">{app.date} at {app.time}</td>
+                                <td className="p-3"><button onClick={() => setSelectedAppointment(app)} className="bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 font-semibold active:scale-95 transition-transform">Start Triage</button></td>
                             </tr>
-                        )) : <tr><td colSpan={4} className="p-3 text-center text-gray-500">The triage queue is empty.</td></tr>}
+                        )) : <tr><td colSpan={4} className="p-4 text-center text-neutral-500">The triage queue is empty.</td></tr>}
                     </tbody>
                 </table>
             </div>
@@ -1014,43 +1030,49 @@ const TriageModal: React.FC<{appointment: Appointment, onClose: () => void, onCo
         }
     };
     
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-full overflow-y-auto space-y-4">
-                <div className="flex justify-between items-start">
-                    <h2 className="text-2xl font-bold">Triage: {appointment.patientName}</h2>
-                    <button type="button" onClick={onClose} className="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-2xl max-h-full flex flex-col animate-fade-in-up">
+                <div className="flex justify-between items-start p-5 border-b border-neutral-200">
+                    <h2 className="text-2xl font-bold text-neutral-800">Triage: {appointment.patientName}</h2>
+                    <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-600">&times;</button>
                 </div>
-                <fieldset className="border p-4 rounded-lg">
-                    <legend className="font-semibold px-2">Vitals</legend>
-                    <div className="grid grid-cols-2 gap-4">
-                        <input type="text" placeholder="Blood Pressure (e.g., 120/80 mmHg)" value={vitals.bloodPressure} onChange={e => setVitals({...vitals, bloodPressure: e.target.value})} className="w-full p-2 border rounded" />
-                        <input type="text" placeholder="Temperature (e.g., 98.6°F)" value={vitals.temperature} onChange={e => setVitals({...vitals, temperature: e.target.value})} className="w-full p-2 border rounded" />
-                        <input type="text" placeholder="Heart Rate (e.g., 70 bpm)" value={vitals.heartRate} onChange={e => setVitals({...vitals, heartRate: e.target.value})} className="w-full p-2 border rounded" />
-                        <input type="text" placeholder="Respiratory Rate (e.g., 16 breaths/min)" value={vitals.respiratoryRate} onChange={e => setVitals({...vitals, respiratoryRate: e.target.value})} className="w-full p-2 border rounded" />
+                <form id="triage-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+                    <fieldset className="border p-4 rounded-lg">
+                        <legend className="font-semibold px-2 text-neutral-700">Vitals</legend>
+                        <div className="grid grid-cols-2 gap-4">
+                            <input type="text" placeholder="Blood Pressure (e.g., 120/80 mmHg)" value={vitals.bloodPressure} onChange={e => setVitals({...vitals, bloodPressure: e.target.value})} className={inputClass} />
+                            <input type="text" placeholder="Temperature (e.g., 98.6°F)" value={vitals.temperature} onChange={e => setVitals({...vitals, temperature: e.target.value})} className={inputClass} />
+                            <input type="text" placeholder="Heart Rate (e.g., 70 bpm)" value={vitals.heartRate} onChange={e => setVitals({...vitals, heartRate: e.target.value})} className={inputClass} />
+                            <input type="text" placeholder="Respiratory Rate (e.g., 16 breaths/min)" value={vitals.respiratoryRate} onChange={e => setVitals({...vitals, respiratoryRate: e.target.value})} className={inputClass} />
+                        </div>
+                    </fieldset>
+                    <fieldset className="border p-4 rounded-lg">
+                        <legend className="font-semibold px-2 text-neutral-700">Allergies</legend>
+                        <div className="grid grid-cols-2 gap-4">
+                             <input type="text" placeholder="Food Allergies" value={allergies.food} onChange={e => setAllergies({...allergies, food: e.target.value})} className={inputClass} />
+                             <input type="text" placeholder="Medication Allergies" value={allergies.medication} onChange={e => setAllergies({...allergies, medication: e.target.value})} className={inputClass} />
+                        </div>
+                    </fieldset>
+                    <textarea placeholder="List current medications..." rows={3} value={currentMedications} onChange={e => setCurrentMedications(e.target.value)} className={inputClass} />
+                    <textarea placeholder="Additional triage notes..." rows={3} value={triageNotes} onChange={e => setTriageNotes(e.target.value)} className={inputClass} />
+                    <div className="flex items-center space-x-4">
+                        <span className="font-semibold text-neutral-700">Assign to Doctor:</span>
+                        <select value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required className={`flex-1 ${inputClass}`}>
+                            <option value="">Select Doctor from {appointment.departmentName}</option>
+                            {doctors.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        </select>
                     </div>
-                </fieldset>
-                <fieldset className="border p-4 rounded-lg">
-                    <legend className="font-semibold px-2">Allergies</legend>
-                    <div className="grid grid-cols-2 gap-4">
-                         <input type="text" placeholder="Food Allergies" value={allergies.food} onChange={e => setAllergies({...allergies, food: e.target.value})} className="w-full p-2 border rounded" />
-                         <input type="text" placeholder="Medication Allergies" value={allergies.medication} onChange={e => setAllergies({...allergies, medication: e.target.value})} className="w-full p-2 border rounded" />
-                    </div>
-                </fieldset>
-                <textarea placeholder="List current medications..." rows={3} value={currentMedications} onChange={e => setCurrentMedications(e.target.value)} className="w-full p-2 border rounded" />
-                <textarea placeholder="Additional triage notes..." rows={3} value={triageNotes} onChange={e => setTriageNotes(e.target.value)} className="w-full p-2 border rounded" />
-                <div className="flex items-center space-x-4">
-                    <span className="font-semibold">Assign to Doctor:</span>
-                    <select value={selectedDoctor} onChange={e => setSelectedDoctor(e.target.value)} required className="flex-1 p-2 border rounded">
-                        <option value="">Select Doctor from {appointment.departmentName}</option>
-                        {doctors.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                    </select>
+                </form>
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                    <button type="submit" form="triage-form" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
+                      {isLoading ? "Submitting..." : "Submit Triage & Assign"}
+                    </button>
                 </div>
-                <div className="flex justify-end space-x-2 pt-4 border-t">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                    <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">{isLoading ? "Submitting..." : "Submit Triage & Assign"}</button>
-                </div>
-            </form>
+            </div>
         </div>
     )
 }
@@ -1082,19 +1104,19 @@ const TestDashboard: React.FC<{type: TestType; title: string}> = ({ type, title 
     };
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">{title}</h1>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold text-neutral-800">{title}</h1>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
                 <table className="w-full text-left">
-                    <thead><tr className="border-b"><th className="p-2">Patient</th><th className="p-2">Test Name</th><th className="p-2">Request Date</th><th className="p-2">Action</th></tr></thead>
+                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Test Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Request Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Action</th></tr></thead>
                     <tbody>
-                        {requests.map(req => (
-                            <tr key={req.id} className="border-b">
-                                <td className="p-2">{req.patientName}</td>
-                                <td className="p-2">{req.testName}</td>
-                                <td className="p-2">{req.requestDate}</td>
-                                <td className="p-2"><button onClick={() => setSelectedTest(req)} className="text-brand-blue hover:underline">Update Result</button></td>
+                        {requests.map((req, index) => (
+                            <tr key={req.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3">{req.patientName}</td>
+                                <td className="p-3">{req.testName}</td>
+                                <td className="p-3">{req.requestDate}</td>
+                                <td className="p-3"><button onClick={() => setSelectedTest(req)} className="font-semibold text-primary-600 hover:underline">Update Result</button></td>
                             </tr>
                         ))}
                     </tbody>
@@ -1111,14 +1133,18 @@ const TestDashboard: React.FC<{type: TestType; title: string}> = ({ type, title 
 const UpdateResultModal: React.FC<{test: TestRequest; onClose: () => void; onUpdate: (result: string) => void}> = ({ test, onClose, onUpdate }) => {
     const [result, setResult] = useState('');
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-            <div className="bg-white rounded-lg p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-4">Update Result for {test.testName}</h2>
-                <p className="mb-4">Patient: {test.patientName}</p>
-                <textarea value={result} onChange={e => setResult(e.target.value)} rows={4} className="w-full p-2 border rounded" placeholder="Enter test result..."></textarea>
-                <div className="flex justify-end space-x-2 mt-4">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                    <button onClick={() => onUpdate(result)} className="px-4 py-2 bg-brand-blue text-white rounded">Save Result</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+                <div className="p-5 border-b border-neutral-200">
+                  <h2 className="text-xl font-bold text-neutral-800">Update Result for {test.testName}</h2>
+                  <p className="text-sm text-neutral-500">Patient: {test.patientName}</p>
+                </div>
+                <div className="p-6">
+                  <textarea value={result} onChange={e => setResult(e.target.value)} rows={4} className="w-full p-2 border border-neutral-300 rounded-lg" placeholder="Enter test result..."></textarea>
+                </div>
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                    <button onClick={() => onUpdate(result)} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold active:scale-95 transition-transform">Save Result</button>
                 </div>
             </div>
         </div>
@@ -1154,18 +1180,22 @@ const UpdateRadiologyResultModal: React.FC<{test: TestRequest; onClose: () => vo
     }
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-            <div className="bg-white rounded-lg p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-4">Update Radiology Result</h2>
-                <p className="mb-4">Patient: {test.patientName} | Test: {test.testName}</p>
-                <textarea value={result} onChange={e => setResult(e.target.value)} rows={4} className="w-full p-2 border rounded" placeholder="Enter findings..."></textarea>
-                <div className="mt-4">
-                    <label className="block mb-2 text-sm font-medium">Upload Image (X-Ray, Scan, etc.)</label>
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="w-full text-sm"/>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+             <div className="bg-white rounded-xl shadow-lifted w-full max-w-md animate-fade-in-up">
+                <div className="p-5 border-b border-neutral-200">
+                    <h2 className="text-xl font-bold text-neutral-800">Update Radiology Result</h2>
+                    <p className="text-sm text-neutral-500">Patient: {test.patientName} | Test: {test.testName}</p>
                 </div>
-                <div className="flex justify-end space-x-2 mt-4">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                    <button onClick={handleSave} disabled={isUploading} className="px-4 py-2 bg-brand-blue text-white rounded disabled:bg-gray-400">{isUploading ? 'Saving...' : 'Save Result'}</button>
+                <div className="p-6 space-y-4">
+                    <textarea value={result} onChange={e => setResult(e.target.value)} rows={4} className="w-full p-2 border rounded border-neutral-300" placeholder="Enter findings..."></textarea>
+                    <div>
+                        <label className="block mb-2 text-sm font-medium text-neutral-700">Upload Image (X-Ray, Scan, etc.)</label>
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200"/>
+                    </div>
+                </div>
+                <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                    <button onClick={handleSave} disabled={isUploading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">{isUploading ? 'Saving...' : 'Save Result'}</button>
                 </div>
             </div>
         </div>
@@ -1176,15 +1206,15 @@ const ICUDashboard: React.FC = () => {
     const [beds, setBeds] = useState<ICUBed[]>([]);
     useEffect(() => { api.getICUBeds().then(setBeds); }, []);
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">ICU Bed Status</h1>
+            <h1 className="text-3xl font-bold text-neutral-800">ICU Bed Status</h1>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {beds.map(bed => (
-                    <div key={bed.id} className={`p-4 rounded-lg shadow-md text-center ${bed.isOccupied ? 'bg-red-200' : 'bg-green-200'}`}>
-                        <p className="font-bold text-lg">{bed.roomNumber}</p>
-                        <p className="text-sm">{bed.roomType}</p>
-                        <p className="mt-2 font-semibold text-sm">{bed.isOccupied ? `Occupied: ${bed.patientName}` : 'Available'}</p>
+                {beds.map((bed, index) => (
+                    <div key={bed.id} className={`p-4 rounded-lg shadow-soft text-center border animate-fade-in-up ${bed.isOccupied ? 'bg-danger-50 border-danger-200' : 'bg-success-50 border-success-200'}`} style={{ animationDelay: `${index * 50}ms` }}>
+                        <p className="font-bold text-lg text-neutral-800">{bed.roomNumber}</p>
+                        <p className="text-sm text-neutral-600">{bed.roomType}</p>
+                        <p className={`mt-2 font-semibold text-sm ${bed.isOccupied ? 'text-danger-700' : 'text-success-700'}`}>{bed.isOccupied ? `Occupied: ${bed.patientName}` : 'Available'}</p>
                     </div>
                 ))}
             </div>
@@ -1216,11 +1246,14 @@ const DispenseModal: React.FC<{prescription: Prescription, onClose: () => void, 
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <div className="bg-white rounded-lg p-8 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg animate-fade-in-up">
+                <div className="p-5 border-b border-neutral-200">
+                  <h2 className="text-xl font-bold text-neutral-800">Dispense Medication</h2>
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <h2 className="text-2xl font-bold mb-4">Dispense Medication</h2>
-                    <div className="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-md mb-4">
+                  <div className="p-6">
+                    <div className="space-y-2 text-sm text-neutral-700 bg-neutral-50 p-4 rounded-md mb-4 border">
                         <p><strong>Patient:</strong> {prescription.patientName} ({prescription.patientAbhaId})</p>
                         <p><strong>Medication:</strong> {prescription.medication}</p>
                         <p><strong>Quantity:</strong> {prescription.quantity}</p>
@@ -1229,7 +1262,7 @@ const DispenseModal: React.FC<{prescription: Prescription, onClose: () => void, 
                         <p><strong>Prescribed by:</strong> {prescription.doctorName} on {prescription.date}</p>
                     </div>
                      <div>
-                        <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="price" className="block text-sm font-medium text-neutral-700 mb-1">
                             Total Price
                         </label>
                         <input
@@ -1239,14 +1272,15 @@ const DispenseModal: React.FC<{prescription: Prescription, onClose: () => void, 
                             step="0.01"
                             value={price}
                             onChange={e => setPrice(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-blue focus:border-brand-blue"
+                            className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50"
                             placeholder="Enter total price"
                             required
                         />
                     </div>
-                    <div className="flex justify-end space-x-2 mt-6">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded-lg disabled:bg-gray-400">
+                  </div>
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
                             {isLoading ? "Processing..." : "Dispense & Bill"}
                         </button>
                     </div>
@@ -1271,49 +1305,49 @@ const PharmacyDashboard: React.FC = () => {
     }, [fetchData]);
 
     return (
-         <div>
+         <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Pharmacy Dashboard</h1>
-             <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-                <h2 className="text-xl font-semibold mb-2">Pending Prescriptions</h2>
+            <h1 className="text-3xl font-bold text-neutral-800">Pharmacy Dashboard</h1>
+             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <h2 className="text-xl font-semibold mb-2 p-2">Pending Prescriptions</h2>
                 <div className="max-h-96 overflow-y-auto">
                     <table className="w-full text-left">
-                        <thead><tr className="border-b text-sm">
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider">Patient</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider">ABHA ID</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider">Medication</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider">Qty</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider">Doctor</th>
-                            <th className="p-2 font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+                        <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200 text-sm">
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Patient</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">ABHA ID</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Medication</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Qty</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Doctor</th>
+                            <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider">Action</th>
                         </tr></thead>
                         <tbody>
                             {pending.length === 0 && (
-                                <tr><td colSpan={6} className="text-center p-4 text-gray-500">No pending prescriptions.</td></tr>
+                                <tr><td colSpan={6} className="text-center p-4 text-neutral-500">No pending prescriptions.</td></tr>
                             )}
-                            {pending.map(p => <tr key={p.id} className="border-b hover:bg-gray-50 text-sm">
-                                <td className="p-2">{p.patientName}</td>
-                                <td className="p-2">{p.patientAbhaId}</td>
-                                <td className="p-2">{p.medication}</td>
-                                <td className="p-2">{p.quantity}</td>
-                                <td className="p-2">{p.doctorName}</td>
-                                <td className="p-2">
-                                    <button onClick={() => setSelectedPrescription(p)} className="bg-brand-blue text-white px-3 py-1 text-xs rounded hover:bg-brand-blue-dark">Dispense</button>
+                            {pending.map((p, index) => <tr key={p.id} className="border-b border-neutral-200 hover:bg-primary-50/50 text-sm animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3">{p.patientName}</td>
+                                <td className="p-3">{p.patientAbhaId}</td>
+                                <td className="p-3">{p.medication}</td>
+                                <td className="p-3">{p.quantity}</td>
+                                <td className="p-3">{p.doctorName}</td>
+                                <td className="p-3">
+                                    <button onClick={() => setSelectedPrescription(p)} className="bg-primary-600 text-white px-3 py-1 text-xs rounded-md hover:bg-primary-700 font-semibold active:scale-95 transition-transform">Dispense</button>
                                 </td>
                             </tr>)}
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-md">
-                 <h2 className="text-xl font-semibold mb-2">Inventory</h2>
+            <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                 <h2 className="text-xl font-semibold mb-2 p-2">Inventory</h2>
                  <table className="w-full text-left">
-                    <thead><tr className="border-b">
-                        <th className="p-2">Medication</th><th className="p-2">Quantity</th><th className="p-2">Cost Price</th><th className="p-2">Selling Price</th>
+                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Quantity</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Cost Price</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Selling Price</th>
                     </tr></thead>
                     <tbody>
-                        {stock.map(med => <tr key={med.id} className="border-b">
-                            <td className="p-2">{med.name}</td><td className="p-2">{med.quantity}</td>
-                            <td className="p-2">${med.costPrice.toFixed(2)}</td><td className="p-2">${med.sellingPrice.toFixed(2)}</td>
+                        {stock.map((med, index) => <tr key={med.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            <td className="p-3">{med.name}</td><td className="p-3">{med.quantity}</td>
+                            <td className="p-3">${med.costPrice.toFixed(2)}</td><td className="p-3">${med.sellingPrice.toFixed(2)}</td>
                         </tr>)}
                     </tbody>
                 </table>
@@ -1349,22 +1383,22 @@ const HRDashboard: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">HR Dashboard: Staff Attendance ({today})</h1>
-             <div className="bg-white p-4 rounded-lg shadow-md">
+            <h1 className="text-3xl font-bold text-neutral-800">HR Dashboard: Staff Attendance ({today})</h1>
+             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
                  <table className="w-full text-left">
-                    <thead><tr className="border-b">
-                        <th className="p-2">Staff Name</th><th className="p-2">Role</th><th className="p-2">Clock In</th><th className="p-2">Clock Out</th><th className="p-2">Work Hours</th>
+                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200">
+                        <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Staff Name</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Role</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Clock In</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Clock Out</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Work Hours</th>
                     </tr></thead>
                     <tbody>
-                        {staff.map(s => {
+                        {staff.map((s, index) => {
                             const record = attendance.find(a => a.staffId === s.id);
-                            return (<tr key={s.id} className="border-b">
-                                <td className="p-2">{s.name}</td><td className="p-2">{s.role}</td>
-                                <td className="p-2">{record?.inTime || 'N/A'}</td>
-                                <td className="p-2">{record?.outTime || 'N/A'}</td>
-                                <td className="p-2">{calculateWorkHours(record?.inTime, record?.outTime)}</td>
+                            return (<tr key={s.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                <td className="p-3">{s.name}</td><td className="p-3">{s.role}</td>
+                                <td className="p-3">{record?.inTime || 'N/A'}</td>
+                                <td className="p-3">{record?.outTime || 'N/A'}</td>
+                                <td className="p-3">{calculateWorkHours(record?.inTime, record?.outTime)}</td>
                             </tr>);
                         })}
                     </tbody>
@@ -1404,23 +1438,27 @@ const AddBillModal: React.FC<{onClose: () => void, onAdded: () => void}> = ({ on
             setIsLoading(false);
         }
     };
+    
+    const inputClass = "w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-shadow";
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <div className="bg-white rounded-lg p-8 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-lg animate-fade-in-up">
+                 <div className="p-5 border-b border-neutral-200">
+                  <h2 className="text-xl font-bold text-neutral-800">Add New Patient Bill</h2>
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <h2 className="text-2xl font-bold mb-4">Add New Patient Bill</h2>
-                    <div className="space-y-4">
-                        <select value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required className="w-full p-2 border rounded">
+                    <div className="p-6 space-y-4">
+                        <select value={selectedPatient} onChange={e => setSelectedPatient(e.target.value)} required className={inputClass}>
                             <option value="">Select a Patient</option>
                             {patients.map(p => <option key={p.id} value={p.id}>{p.name} ({p.abhaId})</option>)}
                         </select>
-                        <input type="text" placeholder="Bill Details (e.g., Consultation Fee)" value={details} onChange={e => setDetails(e.target.value)} required className="w-full p-2 border rounded"/>
-                        <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} required min="0.01" step="0.01" className="w-full p-2 border rounded"/>
+                        <input type="text" placeholder="Bill Details (e.g., Consultation Fee)" value={details} onChange={e => setDetails(e.target.value)} required className={inputClass}/>
+                        <input type="number" placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} required min="0.01" step="0.01" className={inputClass}/>
                     </div>
-                    <div className="flex justify-end space-x-2 mt-6">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-brand-blue text-white rounded-lg disabled:bg-gray-400">
+                    <div className="flex justify-end space-x-3 p-5 bg-neutral-100 border-t border-neutral-200 rounded-b-xl">
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-lg hover:bg-neutral-300 font-semibold">Cancel</button>
+                        <button type="submit" disabled={isLoading} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-semibold disabled:bg-neutral-400 active:scale-95 transition-transform">
                             {isLoading ? "Adding..." : "Add Bill"}
                         </button>
                     </div>
@@ -1431,40 +1469,61 @@ const AddBillModal: React.FC<{onClose: () => void, onAdded: () => void}> = ({ on
 };
 
 const PatientBillDetailsModal: React.FC<{patient: { id: string, name: string }, onClose: () => void, allBills: Bill[]}> = ({ patient, onClose, allBills }) => {
-    const patientBills = allBills.filter(b => b.patientId === patient.id);
+    const patientBills = allBills.filter(b => b.patientId === patient.id).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     const totalBilled = patientBills.reduce((sum, bill) => sum + bill.amount, 0);
     const totalDue = patientBills.filter(b => b.status === 'Unpaid').reduce((sum, bill) => sum + bill.amount, 0);
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
-            <div className="bg-white rounded-lg p-8 w-full max-w-2xl max-h-[90vh] flex flex-col">
-                <div className="flex justify-between items-start">
-                    <h2 className="text-2xl font-bold mb-4">Billing Details for {patient.name}</h2>
-                    <button onClick={onClose} className="text-2xl">&times;</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+            <div className="bg-white rounded-xl shadow-lifted w-full max-w-3xl max-h-[90vh] flex flex-col animate-fade-in-up">
+                <div className="p-5 border-b bg-neutral-50 rounded-t-xl flex justify-between items-center">
+                    <div>
+                        <h2 className="text-2xl font-bold text-neutral-800">Billing Statement</h2>
+                        <p className="text-neutral-600">For Patient: <span className="font-semibold">{patient.name}</span></p>
+                    </div>
+                    <button onClick={onClose} className="text-3xl text-neutral-400 hover:text-danger-600 transition-colors">&times;</button>
                 </div>
-                <div className="flex-grow overflow-y-auto mb-4">
-                    <table className="w-full text-left">
-                        <thead><tr className="border-b"><th className="p-2">Date</th><th className="p-2">Details</th><th className="p-2">Amount</th><th className="p-2">Status</th></tr></thead>
-                        <tbody>
-                            {patientBills.map(b => (
-                                <tr key={b.id} className="border-b">
-                                    <td className="p-2">{b.date}</td>
-                                    <td className="p-2">{b.details}</td>
-                                    <td className="p-2">${b.amount.toFixed(2)}</td>
-                                    <td className="p-2">
-                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${b.status === 'Paid' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-                                            {b.status}
-                                        </span>
-                                    </td>
+                
+                <div className="p-6 flex-grow overflow-y-auto">
+                    {patientBills.length > 0 ? (
+                        <table className="w-full text-left table-auto">
+                            <thead className="sticky top-0 bg-white">
+                                <tr className="border-b-2 border-neutral-200">
+                                    <th className="p-3 text-sm font-bold text-neutral-500 uppercase tracking-wider">Date</th>
+                                    <th className="p-3 text-sm font-bold text-neutral-500 uppercase tracking-wider">Service Description</th>
+                                    <th className="p-3 text-sm font-bold text-neutral-500 uppercase tracking-wider text-right">Amount</th>
+                                    <th className="p-3 text-sm font-bold text-neutral-500 uppercase tracking-wider text-center">Status</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {patientBills.map(b => (
+                                    <tr key={b.id} className="border-b border-neutral-200 hover:bg-primary-50/50">
+                                        <td className="p-3 text-neutral-600 whitespace-nowrap">{b.date}</td>
+                                        <td className="p-3 text-neutral-800">{b.details}</td>
+                                        <td className="p-3 text-neutral-900 font-mono text-right">${b.amount.toFixed(2)}</td>
+                                        <td className="p-3 text-center">
+                                            <span className={`px-3 py-1 text-xs font-bold rounded-full ${b.status === 'Paid' ? 'bg-success-100 text-success-800' : 'bg-danger-100 text-danger-800'}`}>
+                                                {b.status.toUpperCase()}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <div className="text-center text-neutral-500 py-12">
+                            <div className="text-5xl mb-2 mx-auto w-16 h-16">{ICONS.billing}</div>
+                            <p className="font-semibold">No billing history found for this patient.</p>
+                        </div>
+                    )}
                 </div>
-                <div className="text-right font-semibold text-lg border-t pt-4">
-                    <p>Total Billed: ${totalBilled.toFixed(2)}</p>
-                    <p className="text-red-600">Total Due: ${totalDue.toFixed(2)}</p>
-                </div>
+
+                {patientBills.length > 0 && (
+                    <div className="p-5 border-t bg-neutral-50 rounded-b-xl text-right space-y-1">
+                        <p className="text-lg">Total Billed: <span className="font-bold text-neutral-900 w-32 inline-block text-right">${totalBilled.toFixed(2)}</span></p>
+                        <p className="text-xl">Amount Due: <span className="font-bold text-danger-600 bg-danger-100 px-2 py-1 rounded w-32 inline-block text-right">${totalDue.toFixed(2)}</span></p>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -1509,48 +1568,64 @@ const FinanceDashboard: React.FC = () => {
     const patientSummaries = Object.values(patientBillSummary);
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Finance Dashboard</h1>
-                <button onClick={() => setShowAddBillModal(true)} className="bg-brand-green text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-brand-green-dark">
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold text-neutral-800">Finance Dashboard</h1>
+                <button onClick={() => setShowAddBillModal(true)} className="bg-accent-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-accent-600 font-semibold active:scale-95 transition-transform">
                     {ICONS.add}
                     <span>Add Patient Bill</span>
                 </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                 <Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-green-100 text-green-600" />
-                 <Card title="Medication Cost" value={`$${summary.totalCost.toFixed(2)}`} icon={ICONS.billing} color="bg-yellow-100 text-yellow-600" />
-                 <Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-blue-100 text-blue-600" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div className="animate-fade-in-up"><Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-success-100 text-success-600" /></div>
+                 <div className="animate-fade-in-up" style={{ animationDelay: '100ms'}}><Card title="Medication Cost" value={`$${summary.totalCost.toFixed(2)}`} icon={ICONS.billing} color="bg-warning-100 text-warning-600" /></div>
+                 <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}><Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-primary-100 text-primary-600" /></div>
             </div>
-             <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-                <h2 className="text-xl font-semibold mb-2">Patient Billing Summary</h2>
-                 <table className="w-full text-left">
-                    <thead><tr className="border-b"><th className="p-2">Patient Name</th><th className="p-2">Total Billed</th><th className="p-2">Amount Due</th><th className="p-2">Action</th></tr></thead>
-                    <tbody>
-                        {patientSummaries.map((s: any) => <tr key={s.patientId} className="border-b">
-                            <td className="p-2">{s.patientName}</td>
-                            <td className="p-2">${s.totalBilled.toFixed(2)}</td>
-                            <td className="p-2 font-bold text-red-600">${s.totalDue.toFixed(2)}</td>
-                            <td className="p-2">
-                                <button onClick={() => setSelectedPatient({ id: s.patientId, name: s.patientName })} className="text-brand-blue hover:underline">View Details</button>
-                            </td>
-                        </tr>)}
-                    </tbody>
-                </table>
+             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <h2 className="text-xl font-semibold mb-2 p-2">Patient Billing Summary</h2>
+                 <div className="max-h-96 overflow-y-auto">
+                    <table className="w-full text-left">
+                        <thead className="bg-neutral-50">
+                            <tr className="border-b-2 border-neutral-200">
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient Name</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm text-right">Total Billed</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm text-right">Amount Due</th>
+                                <th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {patientSummaries.map((s: any, index: number) => (
+                                <tr key={s.patientId} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                                    <td className="p-3 font-medium">{s.patientName}</td>
+                                    <td className="p-3 text-right">${s.totalBilled.toFixed(2)}</td>
+                                    <td className="p-3 font-extrabold text-danger-600 text-right">${s.totalDue.toFixed(2)}</td>
+                                    <td className="p-3 text-center">
+                                        <button 
+                                            onClick={() => setSelectedPatient({ id: s.patientId, name: s.patientName })} 
+                                            className="text-sm bg-primary-100 text-primary-700 font-semibold px-3 py-1 rounded-md hover:bg-primary-200 transition-colors"
+                                        >
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-             <div className="bg-white p-4 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-2">Medication Profit & Loss</h2>
+             <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                <h2 className="text-xl font-semibold mb-2 p-2">Medication Profit & Loss</h2>
                  <table className="w-full text-left">
-                    <thead><tr className="border-b"><th className="p-2">Medication</th><th className="p-2">Patient</th><th className="p-2">Date</th><th className="p-2">Cost</th><th className="p-2">Revenue</th><th className="p-2">Profit</th></tr></thead>
+                    <thead className="bg-neutral-50"><tr className="border-b-2 border-neutral-200"><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Medication</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Patient</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Date</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Cost</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Revenue</th><th className="p-3 font-semibold text-neutral-500 uppercase tracking-wider text-sm">Profit</th></tr></thead>
                     <tbody>
-                        {financeData?.medicationProfit.map((item: any) => <tr key={item.id} className="border-b">
-                            <td className="p-2">{item.medication}</td>
-                            <td className="p-2">{item.patientName}</td>
-                            <td className="p-2">{item.date}</td>
-                            <td className="p-2">${item.costPrice.toFixed(2)}</td>
-                            <td className="p-2">${item.sellingPrice.toFixed(2)}</td>
-                            <td className={`p-2 font-bold ${item.profit > 0 ? 'text-green-600' : 'text-red-600'}`}>${item.profit.toFixed(2)}</td>
+                        {financeData?.medicationProfit.map((item: any, index: number) => <tr key={item.id} className="border-b border-neutral-200 hover:bg-primary-50/50 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                            <td className="p-3">{item.medication}</td>
+                            <td className="p-3">{item.patientName}</td>
+                            <td className="p-3">{item.date}</td>
+                            <td className="p-3">${item.costPrice.toFixed(2)}</td>
+                            <td className="p-3">${item.sellingPrice.toFixed(2)}</td>
+                            <td className={`p-3 font-bold ${item.profit > 0 ? 'text-success-700' : 'text-danger-700'}`}>${item.profit.toFixed(2)}</td>
                         </tr>)}
                     </tbody>
                 </table>
@@ -1596,29 +1671,29 @@ const ManagerDashboard: React.FC = () => {
     const onDutyStaff = attendance.filter(a => a.inTime && !a.outTime);
 
     return (
-        <div>
+        <div className="space-y-8 animate-fade-in-up">
             <AttendanceTracker />
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Manager's Overview</h1>
-                <button onClick={downloadFinancials} disabled={!financeData} className="bg-brand-blue text-white px-4 py-2 rounded-lg disabled:bg-gray-400">Download Financial Report</button>
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold text-neutral-800">Manager's Overview</h1>
+                <button onClick={downloadFinancials} disabled={!financeData} className="bg-primary-600 text-white px-4 py-2 rounded-lg disabled:bg-neutral-400 font-semibold active:scale-95 transition-transform">Download Financial Report</button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                 <Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-green-100 text-green-600" />
-                 <Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-blue-100 text-blue-600" />
-                 <Card title="Staff on Duty" value={onDutyStaff.length} icon={ICONS.users} color="bg-yellow-100 text-yellow-600" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div className="animate-fade-in-up"><Card title="Medication Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} icon={ICONS.billing} color="bg-success-100 text-success-600" /></div>
+                 <div className="animate-fade-in-up" style={{ animationDelay: '100ms'}}><Card title="Medication Profit" value={`$${summary.totalProfit.toFixed(2)}`} icon={ICONS.billing} color="bg-primary-100 text-primary-600" /></div>
+                 <div className="animate-fade-in-up" style={{ animationDelay: '200ms'}}><Card title="Staff on Duty" value={onDutyStaff.length} icon={ICONS.users} color="bg-secondary-100 text-secondary-600" /></div>
             </div>
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-2">Doctor Workload (Active Patients)</h2>
+                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                    <h2 className="text-xl font-semibold mb-2 p-2">Doctor Workload (Active Patients)</h2>
                     <ul>{workload.map(w => <li key={w.doctorId} className="flex justify-between p-2 border-b"><span>{w.doctorName}</span><span className="font-bold">{w.patientCount} patients</span></li>)}</ul>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-2">Staff on Duty Today</h2>
+                <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200">
+                    <h2 className="text-xl font-semibold mb-2 p-2">Staff on Duty Today</h2>
                     <ul>
                         {onDutyStaff.length > 0 ? (
                             onDutyStaff.map(a => <li key={a.id} className="p-2 border-b">{a.staffName} - Clocked in at {a.inTime}</li>)
                         ) : (
-                            <li className="p-2 text-center text-gray-500">No staff currently on duty.</li>
+                            <li className="p-2 text-center text-neutral-500">No staff currently on duty.</li>
                         )}
                     </ul>
                 </div>
@@ -1677,31 +1752,31 @@ const AttendanceTracker: React.FC = () => {
         }
     };
     
-    if (isLoading) {
-        return <div className="p-4 bg-white shadow rounded-lg text-center">Loading attendance...</div>
+    if (isLoading && !attendance) {
+        return <div className="p-4 bg-white shadow-soft rounded-lg text-center h-24 animate-pulse"></div>
     }
 
     const hasClockedIn = attendance && attendance.inTime;
     const hasClockedOut = attendance && attendance.outTime;
 
     return (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex items-center justify-between">
+        <div className="bg-white p-4 rounded-xl shadow-soft border border-neutral-200 flex items-center justify-between">
             <div>
-                <h2 className="text-xl font-semibold text-gray-800">Today's Attendance</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-xl font-semibold text-neutral-800">Today's Attendance</h2>
+                <p className="text-sm text-neutral-500">
                     {hasClockedIn ? `Checked In at: ${attendance.inTime}` : 'You have not checked in today.'}
                     {hasClockedOut && ` | Checked Out at: ${attendance.outTime}`}
                 </p>
             </div>
             <div>
                 {!hasClockedIn && (
-                    <button onClick={handleClockIn} disabled={isLoading} className="bg-brand-green text-white px-4 py-2 rounded-lg hover:bg-brand-green-dark">Check In</button>
+                    <button onClick={handleClockIn} disabled={isLoading} className="bg-success-600 text-white px-4 py-2 rounded-lg hover:bg-success-700 font-semibold active:scale-95 transition-transform">Check In</button>
                 )}
                 {hasClockedIn && !hasClockedOut && (
-                    <button onClick={handleClockOut} disabled={isLoading} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Check Out</button>
+                    <button onClick={handleClockOut} disabled={isLoading} className="bg-danger-100 text-danger-700 px-4 py-2 rounded-lg hover:bg-danger-600 hover:text-white font-semibold active:scale-95 transition-all">Check Out</button>
                 )}
                 {hasClockedIn && hasClockedOut && (
-                    <span className="text-brand-green-dark font-semibold">Completed for today</span>
+                    <span className="text-success-700 font-semibold">Completed for today</span>
                 )}
             </div>
         </div>
