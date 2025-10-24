@@ -1,0 +1,5 @@
+{
+  "name": "Copy of medaithon",
+  "description": "A comprehensive, single-page React application designed to simulate a modern Hospital Management System. It features distinct portals for patients and hospital staff, showcasing functionalities like appointment booking, medical record management, and role-based dashboards for doctors, nurses, lab technicians, and administrators.",
+  "requestFramePermissions": []
+}
