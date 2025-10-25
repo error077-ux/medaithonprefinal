@@ -1039,7 +1039,7 @@ const TriageModal: React.FC<{appointment: Appointment, onClose: () => void, onCo
                     <h2 className="text-2xl font-bold text-neutral-900">Triage: {appointment.patientName}</h2>
                     <button type="button" onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
-                <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+                <form id="triage-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
                     <fieldset className="border p-4 rounded-lg">
                         <legend className="font-semibold px-2 text-neutral-700">Vitals</legend>
                         <div className="grid grid-cols-2 gap-4">

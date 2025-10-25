@@ -248,7 +248,7 @@ const AppointmentModal: React.FC<{onClose: () => void; onBooked: () => void}> = 
                     <h2 className="text-xl font-bold text-neutral-900">Book Appointment</h2>
                     <button onClick={onClose} className="text-2xl text-neutral-500 hover:text-danger-dark">&times;</button>
                 </div>
-                <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+                <form id="appointment-form" onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
                     <div>
                         <h3 className="font-semibold text-neutral-700 mb-2">Appointment Details</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

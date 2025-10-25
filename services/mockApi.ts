@@ -142,17 +142,22 @@ const MOCK_DATA = {
 
 
 // --- UTILITY FUNCTIONS ---
-const getData = <T>(key: string): T => JSON.parse(sessionStorage.getItem(key) || 'null') as T;
-const setData = <T>(key: string, data: T): void => sessionStorage.setItem(key, JSON.stringify(data));
+const getData = <T>(key: string): T => JSON.parse(localStorage.getItem(key) || 'null') as T;
+const setData = <T>(key: string, data: T): void => localStorage.setItem(key, JSON.stringify(data));
 
 // --- API IMPLEMENTATION ---
 
 export const initializeMockData = () => {
-    if (!sessionStorage.getItem('hms_initialized')) {
+    // Use localStorage initialization flag so our storage choice (localStorage)
+    // is consistent. If localStorage hasn't been initialized, populate it
+    // with the mock data. This also covers the case where an old sessionStorage
+    // flag exists but localStorage is empty (which would cause getData to
+    // return null and lead to runtime errors).
+    if (!localStorage.getItem('hms_initialized')) {
         Object.entries(MOCK_DATA).forEach(([key, value]) => {
-            setData(key, value);
+            setData(key, value as any);
         });
-        sessionStorage.setItem('hms_initialized', 'true');
+        localStorage.setItem('hms_initialized', 'true');
     }
 };
 
